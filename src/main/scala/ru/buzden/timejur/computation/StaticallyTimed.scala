@@ -6,7 +6,7 @@ import cats.syntax.order._
 import cats.syntax.semigroup._
 import cats.{Contravariant, Functor, Monoid, Order}
 
-case class StaticallyTimed[A, B, T](computation: A => B, time: T)
+case class StaticallyTimed[-A, +B, +T](computation: A => B, time: T)
 
 object StaticallyTimed extends StaticallyTimed0Instances {
   implicit def tcFunctor[X, T]: Functor[StaticallyTimed[X, ?, T]] = new Functor[StaticallyTimed[X, ?, T]] {
