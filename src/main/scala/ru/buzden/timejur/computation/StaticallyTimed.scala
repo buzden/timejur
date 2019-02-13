@@ -19,7 +19,7 @@ object StaticallyTimed extends StaticallyTimed0Instances {
       StaticallyTimed(fa.computation `compose` f, fa.time)
   }
 
-  implicit def tcArrowChoice[T: Monoid:Order]: Arrow[StaticallyTimed[?, ?, T]] = new TCArrowChoice[T]
+  implicit def tcArrowChoice[T: Monoid:Order]: ArrowChoice[StaticallyTimed[?, ?, T]] = new TCArrowChoice[T]
 }
 
 trait StaticallyTimed0Instances {
