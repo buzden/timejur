@@ -2,6 +2,7 @@ package ru.buzden.timejur.computation
 
 import cats.arrow.{Arrow, ArrowChoice}
 import cats.instances.function._
+import cats.syntax.arrowChoice._
 import cats.syntax.order._
 import cats.syntax.semigroup._
 import cats.{Contravariant, Functor, Monoid, Order}
@@ -38,5 +39,5 @@ private class TCArrow[T: Monoid] extends Arrow[StaticallyTimed[?, ?, T]] {
 
 private class TCArrowChoice[T: Monoid:Order] extends TCArrow[T] with ArrowChoice[StaticallyTimed[?, ?, T]] {
   override def choose[A, B, C, D](f: A =|> C)(g: B =|> D): Either[A, B] =|> Either[C, D] =
-    StaticallyTimed(ArrowChoice[Function1].choose(f.computation)(g.computation), f.time `max` g.time)
+    StaticallyTimed(f.computation +++ g.computation, f.time `max` g.time)
 }
