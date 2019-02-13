@@ -8,7 +8,7 @@ import cats.{Contravariant, Functor, Monoid, Order}
 
 case class TimedComputation[A, B, T](computation: A => B, time: T)
 
-object TimedComputation {
+object TimedComputation extends LowLevelTimedComputationImplicits {
   implicit def tcFunctor[X, T]: Functor[TimedComputation[X, ?, T]] = new Functor[TimedComputation[X, ?, T]] {
     override def map[A, B](fa: TimedComputation[X, A, T])(f: A => B): TimedComputation[X, B, T] =
       TimedComputation(fa.computation `andThen` f, fa.time)
@@ -18,7 +18,9 @@ object TimedComputation {
     override def contramap[A, B](fa: TimedComputation[A, Y, T])(f: B => A): TimedComputation[B, Y, T] =
       TimedComputation(fa.computation `compose` f, fa.time)
   }
+}
 
+trait LowLevelTimedComputationImplicits {
   implicit def tcArrow[T: Monoid]: Arrow[TimedComputation[?, ?, T]] = new TCArrow[T]
 }
 
