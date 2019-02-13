@@ -8,7 +8,7 @@ import cats.{Contravariant, Functor, Monoid, Order}
 
 case class StaticallyTimed[-A, +B, +T](computation: A => B, time: T)
 
-object StaticallyTimed extends StaticallyTimed0Instances {
+object StaticallyTimed {
   implicit def tcFunctor[X, T]: Functor[StaticallyTimed[X, ?, T]] = new Functor[StaticallyTimed[X, ?, T]] {
     override def map[A, B](fa: StaticallyTimed[X, A, T])(f: A => B): StaticallyTimed[X, B, T] =
       StaticallyTimed(fa.computation `andThen` f, fa.time)
@@ -20,9 +20,6 @@ object StaticallyTimed extends StaticallyTimed0Instances {
   }
 
   implicit def tcArrowChoice[T: Monoid:Order]: ArrowChoice[StaticallyTimed[?, ?, T]] = new TCArrowChoice[T]
-}
-
-trait StaticallyTimed0Instances {
   implicit def tcArrow[T: Monoid]: Arrow[StaticallyTimed[?, ?, T]] = new TCArrow[T]
 }
 
