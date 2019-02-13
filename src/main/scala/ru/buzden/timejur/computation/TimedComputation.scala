@@ -1,9 +1,10 @@
 package ru.buzden.timejur.computation
 
-import cats.arrow.Arrow
+import cats.arrow.{Arrow, ArrowChoice}
 import cats.instances.function._
+import cats.syntax.order._
 import cats.syntax.semigroup._
-import cats.{Contravariant, Functor, Monoid}
+import cats.{Contravariant, Functor, Monoid, Order}
 
 case class TimedComputation[A, B, T](computation: A => B, time: T)
 
@@ -30,5 +31,10 @@ object TimedComputation {
 
     override def first[A, B, C](fa: A =|> B): (A, C) =|> (B, C) =
       TimedComputation(Arrow[Function1].first(fa.computation), fa.time)
+  }
+
+  private class TCArrowChoice[T: Monoid:Order] extends TCArrow[T] with ArrowChoice[TimedComputation[?, ?, T]] {
+    override def choose[A, B, C, D](f: A =|> C)(g: B =|> D): Either[A, B] =|> Either[C, D] =
+      TimedComputation(ArrowChoice[Function1].choose(f.computation)(g.computation), f.time `max` g.time)
   }
 }
