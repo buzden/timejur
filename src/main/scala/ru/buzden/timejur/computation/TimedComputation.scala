@@ -18,7 +18,8 @@ object TimedComputation {
       TimedComputation(fa.computation `compose` f, fa.time)
   }
 
-  implicit def tcArrow[T: Monoid]: Arrow[TimedComputation[?, ?, T]] = new Arrow[TimedComputation[?, ?, T]] {
+  implicit def tcArrow[T: Monoid]: Arrow[TimedComputation[?, ?, T]] = new TCArrow[T]
+  private class TCArrow[T: Monoid] extends Arrow[TimedComputation[?, ?, T]] {
     /** Simple type alias for the sake of tacitness */
     type =|>[A, B] = TimedComputation[A, B, T]
 
