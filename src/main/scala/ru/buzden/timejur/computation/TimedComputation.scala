@@ -18,6 +18,8 @@ object TimedComputation extends LowLevelTimedComputationImplicits {
     override def contramap[A, B](fa: TimedComputation[A, Y, T])(f: B => A): TimedComputation[B, Y, T] =
       TimedComputation(fa.computation `compose` f, fa.time)
   }
+
+  implicit def tcArrowChoice[T: Monoid:Order]: Arrow[TimedComputation[?, ?, T]] = new TCArrowChoice[T]
 }
 
 trait LowLevelTimedComputationImplicits {
