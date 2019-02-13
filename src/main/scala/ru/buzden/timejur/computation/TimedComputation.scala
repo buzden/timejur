@@ -1,6 +1,9 @@
 package ru.buzden.timejur.computation
 
-import cats.{Contravariant, Functor}
+import cats.arrow.Arrow
+import cats.instances.function._
+import cats.syntax.semigroup._
+import cats.{Contravariant, Functor, Monoid}
 
 case class TimedComputation[A, B, T](computation: A => B, time: T)
 
@@ -13,5 +16,18 @@ object TimedComputation {
   implicit def tcContravariant[Y, T]: Contravariant[TimedComputation[?, Y, T]] = new Contravariant[TimedComputation[?, Y, T]] {
     override def contramap[A, B](fa: TimedComputation[A, Y, T])(f: B => A): TimedComputation[B, Y, T] =
       TimedComputation(fa.computation `compose` f, fa.time)
+  }
+
+  implicit def tcArrow[T: Monoid]: Arrow[TimedComputation[?, ?, T]] = new Arrow[TimedComputation[?, ?, T]] {
+    /** Simple type alias for the sake of tacitness */
+    type =|>[A, B] = TimedComputation[A, B, T]
+
+    override def lift[A, B](f: A => B): A =|> B = TimedComputation(f, Monoid[T].empty)
+
+    override def compose[A, B, C](f: B =|> C, g: A =|> B): A =|> C =
+      TimedComputation(f.computation `compose` g.computation, f.time |+| g.time)
+
+    override def first[A, B, C](fa: A =|> B): (A, C) =|> (B, C) =
+      TimedComputation(Arrow[Function1].first(fa.computation), fa.time)
   }
 }
