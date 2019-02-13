@@ -20,21 +20,22 @@ object TimedComputation {
   }
 
   implicit def tcArrow[T: Monoid]: Arrow[TimedComputation[?, ?, T]] = new TCArrow[T]
-  private class TCArrow[T: Monoid] extends Arrow[TimedComputation[?, ?, T]] {
-    /** Simple type alias for the sake of tacitness */
-    type =|>[A, B] = TimedComputation[A, B, T]
+}
 
-    override def lift[A, B](f: A => B): A =|> B = TimedComputation(f, Monoid[T].empty)
+private class TCArrow[T: Monoid] extends Arrow[TimedComputation[?, ?, T]] {
+  /** Simple type alias for the sake of tacitness */
+  type =|>[A, B] = TimedComputation[A, B, T]
 
-    override def compose[A, B, C](f: B =|> C, g: A =|> B): A =|> C =
-      TimedComputation(f.computation `compose` g.computation, f.time |+| g.time)
+  override def lift[A, B](f: A => B): A =|> B = TimedComputation(f, Monoid[T].empty)
 
-    override def first[A, B, C](fa: A =|> B): (A, C) =|> (B, C) =
-      TimedComputation(Arrow[Function1].first(fa.computation), fa.time)
-  }
+  override def compose[A, B, C](f: B =|> C, g: A =|> B): A =|> C =
+    TimedComputation(f.computation `compose` g.computation, f.time |+| g.time)
 
-  private class TCArrowChoice[T: Monoid:Order] extends TCArrow[T] with ArrowChoice[TimedComputation[?, ?, T]] {
-    override def choose[A, B, C, D](f: A =|> C)(g: B =|> D): Either[A, B] =|> Either[C, D] =
-      TimedComputation(ArrowChoice[Function1].choose(f.computation)(g.computation), f.time `max` g.time)
-  }
+  override def first[A, B, C](fa: A =|> B): (A, C) =|> (B, C) =
+    TimedComputation(Arrow[Function1].first(fa.computation), fa.time)
+}
+
+private class TCArrowChoice[T: Monoid:Order] extends TCArrow[T] with ArrowChoice[TimedComputation[?, ?, T]] {
+  override def choose[A, B, C, D](f: A =|> C)(g: B =|> D): Either[A, B] =|> Either[C, D] =
+    TimedComputation(ArrowChoice[Function1].choose(f.computation)(g.computation), f.time `max` g.time)
 }
