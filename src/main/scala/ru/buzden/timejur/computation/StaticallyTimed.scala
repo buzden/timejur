@@ -12,15 +12,17 @@ import cats.{Contravariant, Functor, Monoid, Order}
   * that spends some model time to get its result) where
   * time is known statically, without running the computation.
   *
-  * @tparam A input type for the computation
-  * @tparam B resulting type of the computation
-  * @tparam T type for time
-  * @param f function for the computation
-  * @param time model time spent by the computation
+  * @tparam A    input type for the computation
+  * @tparam B    resulting type of the computation
+  * @tparam T    type for time
+  * @param  f    function for the computation
+  * @param  time model time spent by the computation
   */
 final case class StaticallyTimed[-A, +B, +T](f: A => B, time: T)
 
-object StaticallyTimed {
+object StaticallyTimed extends StaticallyTimedInstances
+
+trait StaticallyTimedInstances {
   implicit def stFunctor[X, T]: Functor[StaticallyTimed[X, ?, T]] = new Functor[StaticallyTimed[X, ?, T]] {
     override def map[A, B](fa: StaticallyTimed[X, A, T])(f: A => B): StaticallyTimed[X, B, T] =
       StaticallyTimed(fa.f `andThen` f, fa.time)

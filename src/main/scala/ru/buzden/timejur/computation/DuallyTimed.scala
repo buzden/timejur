@@ -15,19 +15,21 @@ import cats.syntax.semigroup._
   * That is, the following invariant must always hold:
   * `forall a: A :: f(a)._2 <= maxTime`
   *
-  * @tparam A input type for the computation
-  * @tparam B resulting type of the computation
-  * @tparam T type for time
-  * @param f function that defines computation **and** spent model time for each input
-  * @param maxTime maximum spent time for all possible computation inputs
+  * @tparam A       input type for the computation
+  * @tparam B       resulting type of the computation
+  * @tparam T       type for time
+  * @param  f       function that defines computation **and** spent model time for each input
+  * @param  maxTime maximum spent time for all possible computation inputs
   */
 final class DuallyTimed[-A, +B, +T] private[DuallyTimed] (val f: A => (B, T), val maxTime: T)
 // todo to make `DuallyTimed` case class again as soon as compiler would generate
 //  unambiguous `apply` for case classes with private constructor.
 
 object DuallyTimed extends DuallyTimedInstances {
+  /** Creates a dually timed computation with time bounded by the given `maxTime` value */
   def apply[A, B, T: Order](rawF: A => (B, T), maxTime: T): DuallyTimed[A, B, T] = create(maxTime)(rawF)
 
+  /** Creates a dually timed computation with time bounded by the given `maxTime` value */
   def create[A, B, T: Order](maxTime: T)(rawF: A => (B, T)): DuallyTimed[A, B, T] =
     new DuallyTimed[A, B, T](rawF `andThen` { case (b, t) => (b, t `min` maxTime) }, maxTime)
 
