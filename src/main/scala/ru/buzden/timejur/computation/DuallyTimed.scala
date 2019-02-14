@@ -1,7 +1,9 @@
 package ru.buzden.timejur.computation
 
-import cats.Order
+import cats.arrow.ArrowChoice
+import cats.{Contravariant, Functor, Monoid, Order}
 import cats.syntax.order._
+import cats.syntax.semigroup._
 
 /**
   * Data structure representing a timed computation (i.e., a computation
@@ -26,4 +28,45 @@ object DuallyTimed {
 
   def create[A, B, T: Order](maxTime: T)(rawF: A => (B, T)): DuallyTimed[A, B, T] =
     new DuallyTimed[A, B, T](rawF `andThen` { case (b, t) => (b, t `min` maxTime) }, maxTime)
+
+  implicit def dutFunctor[X, T: Order]: Functor[DuallyTimed[X, ?, T]] = new Functor[DuallyTimed[X, ?, T]] {
+    override def map[A, B](fa: DuallyTimed[X, A, T])(f: A => B): DuallyTimed[X, B, T] =
+      create(fa.maxTime){ x =>
+        val (intermediate, time) = fa.f(x)
+        (f(intermediate), time)
+      }
+  }
+
+  implicit def dutContravariant[Y, T: Order]: Contravariant[DuallyTimed[?, Y, T]] = new Contravariant[DuallyTimed[?, Y, T]] {
+    override def contramap[A, B](fa: DuallyTimed[A, Y, T])(f: B => A): DuallyTimed[B, Y, T] =
+      create(fa.maxTime)(fa.f `compose` f)
+  }
+
+  implicit def dutArrowChoice[T: Monoid:Order]: ArrowChoice[DuallyTimed[?, ?, T]] = new ArrowChoice[DuallyTimed[?, ?, T]] {
+    /** Simple type alias for the sake of tacitness */
+    type ==|>[A, B] = DuallyTimed[A, B, T]
+
+    override def lift[A, B](f: A => B): A ==|> B = create(Monoid.empty)(f `andThen` { (_, Monoid.empty) })
+
+    override def first[A, B, C](fa: A ==|> B): (A, C) ==|> (B, C) = create(fa.maxTime) { case (a, c) =>
+      val (b, time) = fa.f(a)
+      ((b, c), time)
+    }
+
+    override def compose[A, B, C](f: B ==|> C, g: A ==|> B): A ==|> C = create(f.maxTime |+| g.maxTime) { a =>
+      val (b, timeAB) = g.f(a)
+      val (c, timeBC) = f.f(b)
+      (c, timeAB |+| timeBC)
+    }
+
+    override def choose[A, B, C, D](f: A ==|> C)(g: B ==|> D): Either[A, B] ==|> Either[C, D] =
+      create(f.maxTime `max` g.maxTime) {
+        case Left(a) =>
+          val (c, timeAC) = f.f(a)
+          (Left(c), timeAC)
+        case Right(b) =>
+          val (d, timeBD) = g.f(b)
+          (Right(d), timeBD)
+      }
+  }
 }
