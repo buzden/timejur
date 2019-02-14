@@ -13,7 +13,7 @@ import cats.{Contravariant, Functor, Monoid}
   * @tparam A input type for the computation
   * @tparam B resulting type of the computation
   * @tparam T type for time
-  * @param f function that defines computation **and** spent model time for each input
+  * @param  f function that defines computation **and** spent model time for each input
   */
 final case class DynamicallyTimed[-A, +B, +T](f: A => (B, T))
 
