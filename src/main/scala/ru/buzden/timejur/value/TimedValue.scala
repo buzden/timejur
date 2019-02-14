@@ -1,13 +1,15 @@
 package ru.buzden.timejur.value
 
 import cats.syntax.semigroup._
-import cats.{Functor, Monad, Monoid, Semigroup}
+import cats.{Eq, Functor, Monad, Monoid, Semigroup}
 
 final case class TimedValue[+A, +T](value: A, time: T)
 
 object TimedValue extends TimedValueInstances
 
 trait TimedValueInstances {
+  implicit def tvEq[A: Eq, T: Eq]: Eq[TimedValue[A, T]] = Eq.and(Eq.by(_.value), Eq.by(_.time))
+
   implicit def tvSemigroup[A: Semigroup, T: Semigroup]: Semigroup[TimedValue[A, T]] = (tv1, tv2) =>
     TimedValue(tv1.value |+| tv2.value, tv1.time |+| tv2.time)
 
