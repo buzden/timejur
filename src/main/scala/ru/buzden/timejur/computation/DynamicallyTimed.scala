@@ -1,6 +1,7 @@
 package ru.buzden.timejur.computation
 
 import cats.arrow.ArrowChoice
+import cats.syntax.semigroup._
 import cats.{Contravariant, Functor, Monoid}
 
 /**
@@ -34,12 +35,27 @@ object DynamicallyTimed {
     /** Simple type alias for the sake of tacitness */
     type =?|>[A, B] = DynamicallyTimed[A, B, T]
 
-    override def lift[A, B](f: A => B): A =?|> B = ???
+    override def lift[A, B](f: A => B): A =?|> B = DynamicallyTimed(f `andThen` { (_, Monoid.empty) })
 
-    override def first[A, B, C](fa: A =?|> B): (A, C) =?|> (B, C) = ???
+    override def first[A, B, C](fa: A =?|> B): (A, C) =?|> (B, C) = DynamicallyTimed { case (a, c) =>
+      val (b, time) = fa.f(a)
+      ((b, c), time)
+    }
 
-    override def compose[A, B, C](f: B =?|> C, g: A =?|> B): A =?|> C = ???
+    override def compose[A, B, C](f: B =?|> C, g: A =?|> B): A =?|> C = DynamicallyTimed { a =>
+      val (b, timeAB) = g.f(a)
+      val (c, timeBC) = f.f(b)
+      (c, timeAB |+| timeBC)
+    }
 
-    override def choose[A, B, C, D](f: A =?|> C)(g: B =?|> D): Either[A, B] =?|> Either[C, D] = ???
+    override def choose[A, B, C, D](f: A =?|> C)(g: B =?|> D): Either[A, B] =?|> Either[C, D] =
+      DynamicallyTimed {
+        case Left(a) =>
+          val (c, timeAC) = f.f(a)
+          (Left(c), timeAC)
+        case Right(b) =>
+          val (d, timeBD) = g.f(b)
+          (Right(d), timeBD)
+      }
   }
 }
