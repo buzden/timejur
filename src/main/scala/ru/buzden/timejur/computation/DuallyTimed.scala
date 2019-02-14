@@ -22,6 +22,8 @@ import cats.syntax.order._
 final case class DuallyTimed[-A, +B, +T] private (f: A => (B, T), maxTime: T)
 
 object DuallyTimed {
-  def apply[A, B, T: Order](rawF: A => (B, T), maxTime: T): DuallyTimed[A, B, T] =
+  def apply[A, B, T: Order](rawF: A => (B, T), maxTime: T): DuallyTimed[A, B, T] = create(maxTime)(rawF)
+
+  def create[A, B, T: Order](maxTime: T)(rawF: A => (B, T)): DuallyTimed[A, B, T] =
     new DuallyTimed[A, B, T](rawF `andThen` { case (b, t) => (b, t `min` maxTime) }, maxTime)
 }
