@@ -13,6 +13,7 @@ import org.scalacheck.cats.implicits._
 import org.scalacheck.{Arbitrary, Cogen}
 import org.specs2.{ScalaCheck, Specification}
 import org.typelevel.discipline.specs2.Discipline
+import ru.buzden.timejur.Time
 
 //noinspection TypeAnnotation
 object DuallyTimedSpec extends Specification with ScalaCheck with Discipline { def is = s2"""

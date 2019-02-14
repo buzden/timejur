@@ -11,6 +11,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Cogen}
 import org.specs2.{ScalaCheck, Specification}
 import org.typelevel.discipline.specs2.Discipline
+import ru.buzden.timejur.Time
 
 //noinspection TypeAnnotation
 object DynamicallyTimedSpec extends Specification with ScalaCheck with Discipline { def is = s2"""
