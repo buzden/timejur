@@ -18,7 +18,7 @@ import cats.{Contravariant, Functor, Monoid}
 final case class DynamicallyTimed[-A, +B, +T](f: A => (B, T))
 
 object DynamicallyTimed {
-  implicit def dtFunctor[X, T]: Functor[DynamicallyTimed[X, ?, T]] = new Functor[DynamicallyTimed[X, ?, T]] {
+  implicit def dytFunctor[X, T]: Functor[DynamicallyTimed[X, ?, T]] = new Functor[DynamicallyTimed[X, ?, T]] {
     override def map[A, B](fa: DynamicallyTimed[X, A, T])(f: A => B): DynamicallyTimed[X, B, T] =
       DynamicallyTimed { x =>
         val (intermediate, time) = fa.f(x)
@@ -26,12 +26,12 @@ object DynamicallyTimed {
       }
   }
 
-  implicit def dtContravariant[Y, T]: Contravariant[DynamicallyTimed[?, Y, T]] = new Contravariant[DynamicallyTimed[?, Y, T]] {
+  implicit def dytContravariant[Y, T]: Contravariant[DynamicallyTimed[?, Y, T]] = new Contravariant[DynamicallyTimed[?, Y, T]] {
     override def contramap[A, B](fa: DynamicallyTimed[A, Y, T])(f: B => A): DynamicallyTimed[B, Y, T] =
       DynamicallyTimed(fa.f `compose` f)
   }
 
-  implicit def atArrowChoice[T: Monoid]: ArrowChoice[DynamicallyTimed[?, ?, T]] = new ArrowChoice[DynamicallyTimed[?, ?, T]] {
+  implicit def dytArrowChoice[T: Monoid]: ArrowChoice[DynamicallyTimed[?, ?, T]] = new ArrowChoice[DynamicallyTimed[?, ?, T]] {
     /** Simple type alias for the sake of tacitness */
     type =?|>[A, B] = DynamicallyTimed[A, B, T]
 
