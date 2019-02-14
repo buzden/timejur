@@ -1,6 +1,7 @@
 package ru.buzden.timejur.computation
 
-import cats.{Contravariant, Functor}
+import cats.arrow.ArrowChoice
+import cats.{Contravariant, Functor, Monoid}
 
 /**
   * Data structure representing a timed computation (i.e., a computation
@@ -27,5 +28,18 @@ object DynamicallyTimed {
   implicit def dtContravariant[Y, T]: Contravariant[DynamicallyTimed[?, Y, T]] = new Contravariant[DynamicallyTimed[?, Y, T]] {
     override def contramap[A, B](fa: DynamicallyTimed[A, Y, T])(f: B => A): DynamicallyTimed[B, Y, T] =
       DynamicallyTimed(fa.f `compose` f)
+  }
+
+  implicit def atArrowChoice[T: Monoid]: ArrowChoice[DynamicallyTimed[?, ?, T]] = new ArrowChoice[DynamicallyTimed[?, ?, T]] {
+    /** Simple type alias for the sake of tacitness */
+    type =?|>[A, B] = DynamicallyTimed[A, B, T]
+
+    override def lift[A, B](f: A => B): A =?|> B = ???
+
+    override def first[A, B, C](fa: A =?|> B): (A, C) =?|> (B, C) = ???
+
+    override def compose[A, B, C](f: B =?|> C, g: A =?|> B): A =?|> C = ???
+
+    override def choose[A, B, C, D](f: A =?|> C)(g: B =?|> D): Either[A, B] =?|> Either[C, D] = ???
   }
 }
