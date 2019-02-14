@@ -1,4 +1,4 @@
-package ru.buzden.timejur.computation
+package ru.buzden.timejur
 
 import cats.instances.int._
 import cats.{Monoid, Order}
