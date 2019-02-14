@@ -26,8 +26,10 @@ final class DuallyTimed[-A, +B, +T] private[DuallyTimed] (val f: A => (B, T), va
 //  unambiguous `apply` for case classes with private constructor.
 
 object DuallyTimed extends DuallyTimedInstances {
+  /** Creates a dually timed computation with time bounded by the given `maxTime` value */
   def apply[A, B, T: Order](rawF: A => (B, T), maxTime: T): DuallyTimed[A, B, T] = create(maxTime)(rawF)
 
+  /** Creates a dually timed computation with time bounded by the given `maxTime` value */
   def create[A, B, T: Order](maxTime: T)(rawF: A => (B, T)): DuallyTimed[A, B, T] =
     new DuallyTimed[A, B, T](rawF `andThen` { case (b, t) => (b, t `min` maxTime) }, maxTime)
 
