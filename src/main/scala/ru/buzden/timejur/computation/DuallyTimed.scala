@@ -21,13 +21,17 @@ import cats.syntax.semigroup._
   * @param f function that defines computation **and** spent model time for each input
   * @param maxTime maximum spent time for all possible computation inputs
   */
-final case class DuallyTimed[-A, +B, +T] private (f: A => (B, T), maxTime: T)
+final class DuallyTimed[-A, +B, +T] private (val f: A => (B, T), val maxTime: T)
+// todo to make `DuallyTimed` case class again as soon as compiler would generate
+//  unambiguous `apply` for case classes with private constructor.
 
 object DuallyTimed {
   def apply[A, B, T: Order](rawF: A => (B, T), maxTime: T): DuallyTimed[A, B, T] = create(maxTime)(rawF)
 
   def create[A, B, T: Order](maxTime: T)(rawF: A => (B, T)): DuallyTimed[A, B, T] =
     new DuallyTimed[A, B, T](rawF `andThen` { case (b, t) => (b, t `min` maxTime) }, maxTime)
+
+  def unapply[A, B, T](dut: DuallyTimed[A, B, T]): Option[(A => (B, T), T)] = Some((dut.f, dut.maxTime))
 
   implicit def dutFunctor[X, T: Order]: Functor[DuallyTimed[X, ?, T]] = new Functor[DuallyTimed[X, ?, T]] {
     override def map[A, B](fa: DuallyTimed[X, A, T])(f: A => B): DuallyTimed[X, B, T] =
