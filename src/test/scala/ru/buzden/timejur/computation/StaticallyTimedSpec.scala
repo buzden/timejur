@@ -43,7 +43,7 @@ object StaticallyTimedSpec extends Specification with ScalaCheck with Discipline
     Arbitrary { (arbitrary[A => B], arbitrary[T]) `mapN` { StaticallyTimed(_, _) } }
 
   implicit def eqStaticallyTimed[A: Arbitrary, B: Eq, T: Eq]: Eq[StaticallyTimed[A, B, T]] =
-    Eq.and(Eq.by(_.computation), Eq.by(_.time))
+    Eq.and(Eq.by(_.f), Eq.by(_.time))
 }
 
 /** Simple time for testing purposes representing a non-negative integer */
