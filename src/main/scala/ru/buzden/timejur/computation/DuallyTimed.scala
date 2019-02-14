@@ -1,5 +1,8 @@
 package ru.buzden.timejur.computation
 
+import cats.Order
+import cats.syntax.order._
+
 /**
   * Data structure representing a timed computation (i.e., a computation
   * that spends some model time to get its result) that contains both
@@ -16,6 +19,9 @@ package ru.buzden.timejur.computation
   * @param f function that defines computation **and** spent model time for each input
   * @param maxTime maximum spent time for all possible computation inputs
   */
-final case class DuallyTimed[-A, +B, +T](f: A => (B, T), maxTime: T)
-// todo to make this not a case class and that f's second component
-//  actually returns min of raw f's result and maxTime value
+final case class DuallyTimed[-A, +B, +T] private (f: A => (B, T), maxTime: T)
+
+object DuallyTimed {
+  def apply[A, B, T: Order](rawF: A => (B, T), maxTime: T): DuallyTimed[A, B, T] =
+    new DuallyTimed[A, B, T](rawF `andThen` { case (b, t) => (b, t `min` maxTime) }, maxTime)
+}
