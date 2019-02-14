@@ -17,7 +17,9 @@ import cats.{Contravariant, Functor, Monoid}
   */
 final case class DynamicallyTimed[-A, +B, +T](f: A => (B, T))
 
-object DynamicallyTimed {
+object DynamicallyTimed extends DynamicallyTimedInstances
+
+trait DynamicallyTimedInstances {
   implicit def dytFunctor[X, T]: Functor[DynamicallyTimed[X, ?, T]] = new Functor[DynamicallyTimed[X, ?, T]] {
     override def map[A, B](fa: DynamicallyTimed[X, A, T])(f: A => B): DynamicallyTimed[X, B, T] =
       DynamicallyTimed { x =>
