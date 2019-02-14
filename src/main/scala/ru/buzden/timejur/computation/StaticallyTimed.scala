@@ -21,21 +21,21 @@ import cats.{Contravariant, Functor, Monoid, Order}
 final case class StaticallyTimed[-A, +B, +T](f: A => B, time: T)
 
 object StaticallyTimed {
-  implicit def tcFunctor[X, T]: Functor[StaticallyTimed[X, ?, T]] = new Functor[StaticallyTimed[X, ?, T]] {
+  implicit def stFunctor[X, T]: Functor[StaticallyTimed[X, ?, T]] = new Functor[StaticallyTimed[X, ?, T]] {
     override def map[A, B](fa: StaticallyTimed[X, A, T])(f: A => B): StaticallyTimed[X, B, T] =
       StaticallyTimed(fa.f `andThen` f, fa.time)
   }
 
-  implicit def tcContravariant[Y, T]: Contravariant[StaticallyTimed[?, Y, T]] = new Contravariant[StaticallyTimed[?, Y, T]] {
+  implicit def stContravariant[Y, T]: Contravariant[StaticallyTimed[?, Y, T]] = new Contravariant[StaticallyTimed[?, Y, T]] {
     override def contramap[A, B](fa: StaticallyTimed[A, Y, T])(f: B => A): StaticallyTimed[B, Y, T] =
       StaticallyTimed(fa.f `compose` f, fa.time)
   }
 
-  implicit def tcArrowChoice[T: Monoid:Order]: ArrowChoice[StaticallyTimed[?, ?, T]] = new TCArrowChoice[T]
-  implicit def tcArrow[T: Monoid]: Arrow[StaticallyTimed[?, ?, T]] = new TCArrow[T]
+  implicit def stArrowChoice[T: Monoid:Order]: ArrowChoice[StaticallyTimed[?, ?, T]] = new STArrowChoice[T]
+  implicit def stArrow[T: Monoid]: Arrow[StaticallyTimed[?, ?, T]] = new STArrow[T]
 }
 
-private class TCArrow[T: Monoid] extends Arrow[StaticallyTimed[?, ?, T]] {
+private class STArrow[T: Monoid] extends Arrow[StaticallyTimed[?, ?, T]] {
   /** Simple type alias for the sake of tacitness */
   type =|>[A, B] = StaticallyTimed[A, B, T]
 
@@ -48,7 +48,7 @@ private class TCArrow[T: Monoid] extends Arrow[StaticallyTimed[?, ?, T]] {
     StaticallyTimed(Arrow[Function1].first(fa.f), fa.time)
 }
 
-private class TCArrowChoice[T: Monoid:Order] extends TCArrow[T] with ArrowChoice[StaticallyTimed[?, ?, T]] {
+private class STArrowChoice[T: Monoid:Order] extends STArrow[T] with ArrowChoice[StaticallyTimed[?, ?, T]] {
   override def choose[A, B, C, D](f: A =|> C)(g: B =|> D): Either[A, B] =|> Either[C, D] =
     StaticallyTimed(f.f +++ g.f, f.time `max` g.time)
 }
