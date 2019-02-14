@@ -21,21 +21,23 @@ import cats.syntax.semigroup._
   * @param f function that defines computation **and** spent model time for each input
   * @param maxTime maximum spent time for all possible computation inputs
   */
-final class DuallyTimed[-A, +B, +T] private (val f: A => (B, T), val maxTime: T)
+final class DuallyTimed[-A, +B, +T] private[DuallyTimed] (val f: A => (B, T), val maxTime: T)
 // todo to make `DuallyTimed` case class again as soon as compiler would generate
 //  unambiguous `apply` for case classes with private constructor.
 
-object DuallyTimed {
+object DuallyTimed extends DuallyTimedInstances {
   def apply[A, B, T: Order](rawF: A => (B, T), maxTime: T): DuallyTimed[A, B, T] = create(maxTime)(rawF)
 
   def create[A, B, T: Order](maxTime: T)(rawF: A => (B, T)): DuallyTimed[A, B, T] =
     new DuallyTimed[A, B, T](rawF `andThen` { case (b, t) => (b, t `min` maxTime) }, maxTime)
 
   def unapply[A, B, T](dut: DuallyTimed[A, B, T]): Option[(A => (B, T), T)] = Some((dut.f, dut.maxTime))
+}
 
+trait DuallyTimedInstances {
   implicit def dutFunctor[X, T: Order]: Functor[DuallyTimed[X, ?, T]] = new Functor[DuallyTimed[X, ?, T]] {
     override def map[A, B](fa: DuallyTimed[X, A, T])(f: A => B): DuallyTimed[X, B, T] =
-      create(fa.maxTime){ x =>
+      DuallyTimed.create(fa.maxTime){ x =>
         val (intermediate, time) = fa.f(x)
         (f(intermediate), time)
       }
@@ -43,28 +45,30 @@ object DuallyTimed {
 
   implicit def dutContravariant[Y, T: Order]: Contravariant[DuallyTimed[?, Y, T]] = new Contravariant[DuallyTimed[?, Y, T]] {
     override def contramap[A, B](fa: DuallyTimed[A, Y, T])(f: B => A): DuallyTimed[B, Y, T] =
-      create(fa.maxTime)(fa.f `compose` f)
+      DuallyTimed.create(fa.maxTime)(fa.f `compose` f)
   }
 
   implicit def dutArrowChoice[T: Monoid:Order]: ArrowChoice[DuallyTimed[?, ?, T]] = new ArrowChoice[DuallyTimed[?, ?, T]] {
     /** Simple type alias for the sake of tacitness */
     type ==|>[A, B] = DuallyTimed[A, B, T]
 
-    override def lift[A, B](f: A => B): A ==|> B = create(Monoid.empty)(f `andThen` { (_, Monoid.empty) })
+    override def lift[A, B](f: A => B): A ==|> B =
+      DuallyTimed.create(Monoid.empty)(f `andThen` { (_, Monoid.empty) })
 
-    override def first[A, B, C](fa: A ==|> B): (A, C) ==|> (B, C) = create(fa.maxTime) { case (a, c) =>
+    override def first[A, B, C](fa: A ==|> B): (A, C) ==|> (B, C) = DuallyTimed.create(fa.maxTime) { case (a, c) =>
       val (b, time) = fa.f(a)
       ((b, c), time)
     }
 
-    override def compose[A, B, C](f: B ==|> C, g: A ==|> B): A ==|> C = create(f.maxTime |+| g.maxTime) { a =>
-      val (b, timeAB) = g.f(a)
-      val (c, timeBC) = f.f(b)
-      (c, timeAB |+| timeBC)
-    }
+    override def compose[A, B, C](f: B ==|> C, g: A ==|> B): A ==|> C =
+      DuallyTimed.create(f.maxTime |+| g.maxTime) { a =>
+        val (b, timeAB) = g.f(a)
+        val (c, timeBC) = f.f(b)
+        (c, timeAB |+| timeBC)
+      }
 
     override def choose[A, B, C, D](f: A ==|> C)(g: B ==|> D): Either[A, B] ==|> Either[C, D] =
-      create(f.maxTime `max` g.maxTime) {
+      DuallyTimed.create(f.maxTime `max` g.maxTime) {
         case Left(a) =>
           val (c, timeAC) = f.f(a)
           (Left(c), timeAC)
