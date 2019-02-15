@@ -6,11 +6,9 @@ import cats.instances.long._
 import cats.instances.tuple._
 import cats.laws.discipline._
 import cats.laws.discipline.eq._
-import cats.syntax.apply._
 import cats.{Eq, Monoid, Order}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.cats.implicits._
-import org.scalacheck.{Arbitrary, Cogen}
+import org.scalacheck.{Arbitrary, Cogen, Gen}
 import org.specs2.{ScalaCheck, Specification}
 import org.typelevel.discipline.specs2.Discipline
 import ru.buzden.timejur.Time
@@ -35,7 +33,7 @@ object DuallyTimedSpec extends Specification with ScalaCheck with Discipline { d
   )
 
   implicit def arbDuallyTimed[A: Cogen, B: Arbitrary, T: Arbitrary:Order]: Arbitrary[DuallyTimed[A, B, T]] =
-    Arbitrary { (arbitrary[A => (B, T)], arbitrary[T]) `mapN` { DuallyTimed(_, _) } }
+    Arbitrary { Gen.zip(arbitrary[A => (B, T)], arbitrary[T]).map { case (f, t) => DuallyTimed(f, t) } }
 
   implicit def eqDuallyTimed[A: Arbitrary, B: Eq, T: Eq]: Eq[DuallyTimed[A, B, T]] =
     Eq.and(Eq.by(_.f), Eq.by(_.maxTime))
