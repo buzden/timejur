@@ -2,7 +2,7 @@ name := "timejur"
 
 version := "0.1"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.13.0-M5"
 
 lazy val catsVersion = "1.6.0"
 lazy val specs2Version = "4.4.1"
@@ -10,7 +10,6 @@ lazy val specs2Version = "4.4.1"
 // General stuff
 scalacOptions ++= Seq(
   "-language:higherKinds",
-  "-Ypartial-unification",
 )
 libraryDependencies += "org.typelevel" %% "cats-core" % catsVersion
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9")
