@@ -1,5 +1,7 @@
 package ru.buzden.typelevel
 
+import cats.Monad
+
 /**
   * Typeclass for the indexed monad with singleton index types.
   *
@@ -11,26 +13,36 @@ package ru.buzden.typelevel
   * The third type argument must be a singleton and must
   * inherit the second type argument at the same time.
   *
+  * @tparam I used general type of index
   * @tparam F described three-holed monad type
   */
-trait IndexedMonad[F[_, I, _ <: I with Singleton]] {
-  def pure[I, A](a: A)(implicit im: IndexingMonoid[I]): F[A, I, im.Empty]
+trait IndexedMonad[I, F[_, J, _ <: X[J]]] {
+  val im: IndexingMonoid[I]
+  import im._
 
-  def flatMap[I, A, I_A <: I with Singleton, B, I_B <: I with Singleton]
-    (fa: F[A, I, I_A])(f: A => F[B, I, I_B])(implicit is: IndexingSemigroup[I]): F[B, I, is.|+|[I_A, I_B]]
+  def pure[A](a: A): F[A, I, Empty]
+  def flatMap[A, I_A <: X[I], B, I_B <: X[I]](fa: F[A, I, I_A])(f: A => F[B, I, I_B]): F[B, I, I_A |+| I_B]
 }
 
 object IndexedMonad {
   object syntax {
     implicit class IndexedMonadAnyAOps[A](val a: A) extends AnyVal {
-      def pure[F[_, _, _], I](implicit iM: IndexedMonad[F], im: IndexingMonoid[I]): F[A, I, im.Empty] =
-        iM.pure(a)(im)
+      def pure[I, F[_, _, _]](implicit iM: IndexedMonad[I, F]): F[A, I, iM.im.Empty] = iM.pure(a)
     }
 
-    implicit class IndexedMonadOps[F[_, _, _], A, I, I_A <: I with Singleton](val fa: F[A, I, I_A]) extends AnyVal {
-      def flatMap[B, I_B <: I with Singleton]
-          (f: A => F[B, I, I_B])(implicit iM: IndexedMonad[F], is: IndexingSemigroup[I]): F[B, I, is.|+|[I_A, I_B]] =
-        iM.flatMap[I, A, I_A, B, I_B](fa)(f)(is)
+    implicit class IndexedMonadOps[I, F[_, _, _], A, I_A <: X[I]](val fa: F[A, I, I_A]) extends AnyVal {
+      def flatMap[B, I_B <: X[I]](f: A => F[B, I, I_B])(implicit iM: IndexedMonad[I, F]): F[B, I, iM.im.|+|[I_A, I_B]] =
+        iM.flatMap[A, I_A, B, I_B](fa)(f)
     }
+  }
+
+  type I2A[M[_], A, B, C] = M[A]
+  implicit def monadIsIndexedMonad[I: IndexingMonoid, M[_]: Monad]: IndexedMonad[I, I2A[M, ?, ?, ?]] = new IndexedMonad[I, I2A[M, ?, ?, ?]] {
+    override val im: IndexingMonoid[I] = implicitly
+
+    override def pure[A](a: A): M[A] = Monad[M].pure(a)
+
+    override def flatMap[A, I_A <: X[I], B, I_B <: X[I]](fa: M[A])(f: A => M[B]): M[B] =
+      Monad[M].flatMap(fa)(f)
   }
 }
