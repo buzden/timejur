@@ -1,6 +1,6 @@
 package ru.buzden.typelevel
 
-trait IndexedMonad[F[_, _, _]] {
+trait IndexedMonad[F[_, I, _ <: I with Singleton]] {
   def pure[I, A](a: A)(implicit im: IndexingMonoid[I]): F[A, I, im.Empty]
 
   def flatMap[I, A, I_A <: I with Singleton, B, I_B <: I with Singleton]
