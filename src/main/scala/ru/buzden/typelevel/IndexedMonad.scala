@@ -35,14 +35,4 @@ object IndexedMonad {
         iM.flatMap[A, I_A, B, I_B](fa)(f)
     }
   }
-
-  type I2A[M[_], A, B, C] = M[A]
-  implicit def monadIsIndexedMonad[I: IndexingMonoid, M[_]: Monad]: IndexedMonad[I, I2A[M, ?, ?, ?]] = new IndexedMonad[I, I2A[M, ?, ?, ?]] {
-    override val im: IndexingMonoid[I] = implicitly
-
-    override def pure[A](a: A): M[A] = Monad[M].pure(a)
-
-    override def flatMap[A, I_A <: X[I], B, I_B <: X[I]](fa: M[A])(f: A => M[B]): M[B] =
-      Monad[M].flatMap(fa)(f)
-  }
 }
