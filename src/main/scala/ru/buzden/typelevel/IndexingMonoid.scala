@@ -18,6 +18,6 @@ object IndexingMonoid {
     override def empty: Empty = u
 
     override type |+|[A, B] = X[Unit]
-    override def combine[A <: X[Unit], B <: X[Unit]](a: A, b: B): A |+| B = u
+    override def combine[A <: X[Unit], B <: X[Unit]]: A |+| B = u
   }
 }
