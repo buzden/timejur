@@ -1,5 +1,7 @@
 package ru.buzden.typelevel
 
+import cats.Monad
+
 /**
   * Typeclass for the indexed monad with singleton index types.
   *
@@ -32,5 +34,15 @@ object IndexedMonad {
       def flatMap[B, I_B <: X[I]](f: A => F[B, I, I_B])(implicit iM: IndexedMonad[I, F]): F[B, I, iM.im.|+|[I_A, I_B]] =
         iM.flatMap[A, I_A, B, I_B](fa)(f)
     }
+  }
+
+  type I2A[M[_], A, B, C] = M[A]
+  implicit def monadIsIndexedMonad[M[_]: Monad]: IndexedMonad[Unit, I2A[M, ?, ?, ?]] = new IndexedMonad[Unit, I2A[M, ?, ?, ?]] {
+    override val im: IndexingMonoid[Unit] = implicitly
+
+    override def pure[A](a: A): M[A] = Monad[M].pure(a)
+
+    override def flatMap[A, I_A <: X[Unit], B, I_B <: X[Unit]](fa: M[A])(f: A => M[B]): M[B] =
+      Monad[M].flatMap(fa)(f)
   }
 }
