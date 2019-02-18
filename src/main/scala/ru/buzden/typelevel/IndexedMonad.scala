@@ -1,5 +1,18 @@
 package ru.buzden.typelevel
 
+/**
+  * Typeclass for the indexed monad with singleton index types.
+  *
+  * Described indexed monad type is three-holed:
+  * - type of value (analogue of usual monad's type parameter);
+  * - general type of index (which remains unchanged during operations);
+  * - singleton type of particular index value (which changes during operations).
+  *
+  * The third type argument must be a singleton and must
+  * inherit the second type argument at the same time.
+  *
+  * @tparam F described three-holed monad type
+  */
 trait IndexedMonad[F[_, I, _ <: I with Singleton]] {
   def pure[I, A](a: A)(implicit im: IndexingMonoid[I]): F[A, I, im.Empty]
 
