@@ -13,10 +13,10 @@ package ru.buzden.typelevel
   *
   * @tparam F described three-holed monad type
   */
-trait IndexedMonad[F[_, I, _ <: I with Singleton]] {
+trait IndexedMonad[F[_, I, _ <: X[I]]] {
   def pure[I, A](a: A)(implicit im: IndexingMonoid[I]): F[A, I, im.Empty]
 
-  def flatMap[I, A, I_A <: I with Singleton, B, I_B <: I with Singleton]
+  def flatMap[I, A, I_A <: X[I], B, I_B <: X[I]]
     (fa: F[A, I, I_A])(f: A => F[B, I, I_B])(implicit is: IndexingSemigroup[I]): F[B, I, is.|+|[I_A, I_B]]
 }
 
@@ -27,8 +27,8 @@ object IndexedMonad {
         iM.pure(a)(im)
     }
 
-    implicit class IndexedMonadOps[F[_, _, _], A, I, I_A <: I with Singleton](val fa: F[A, I, I_A]) extends AnyVal {
-      def flatMap[B, I_B <: I with Singleton]
+    implicit class IndexedMonadOps[F[_, _, _], A, I, I_A <: X[I]](val fa: F[A, I, I_A]) extends AnyVal {
+      def flatMap[B, I_B <: X[I]]
           (f: A => F[B, I, I_B])(implicit iM: IndexedMonad[F], is: IndexingSemigroup[I]): F[B, I, is.|+|[I_A, I_B]] =
         iM.flatMap[I, A, I_A, B, I_B](fa)(f)(is)
     }
