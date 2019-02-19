@@ -1,5 +1,6 @@
 package ru.buzden.typelevel
 
+// ZZ parameter is a cheating thing, a typelevel ability to require implicit of this type during combining.
 trait IndexingSemigroup[T, ZZ[_, _]] {
   type |+|[A <: X[T], B <: X[T]] <: X[T]
 
