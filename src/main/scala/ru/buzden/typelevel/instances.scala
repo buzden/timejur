@@ -4,19 +4,14 @@ import cats.Monad
 import singleton.ops.+
 
 object instances {
-  case class NewTypeUnit(u: Unit) extends AnyVal
-  implicit val newTypeUnit: NewTypeUnit = NewTypeUnit(())
-
-  implicit val unitHasIndexingMonoid: IndexingMonoid[Unit] = new IndexingMonoid[Unit] {
+  implicit val unitHasIndexingMonoid: IndexingMonoid[Unit] = new IndexingMonoid[Unit] with SimpleIndexingSemigroup[Unit] {
     val u: X[Unit] = ().asInstanceOf[X[Unit]] // I don't know why I need to coerce here.
-
-    type ZZ[A, B] = NewTypeUnit
 
     override type Empty = X[Unit]
     override def empty: Empty = u
 
     override type |+|[A, B] = X[Unit]
-    override def combine[A <: X[Unit], B <: X[Unit]](implicit zz: ZZ[A, B]): A |+| B = u
+    override def combine[A <: X[Unit], B <: X[Unit]]: A |+| B = u
   }
 
   implicit val intHasIndexingMonoid: IndexingMonoid[Int] = new IndexingMonoid[Int] {
