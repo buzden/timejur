@@ -1,6 +1,7 @@
 package ru.buzden.typelevel
 
 import cats.Monad
+import singleton.ops.+
 
 object instances {
   case class NewTypeUnit(u: Unit) extends AnyVal
@@ -14,6 +15,14 @@ object instances {
 
     override type |+|[A, B] = X[Unit]
     override def combine[A <: X[Unit], B <: X[Unit]](implicit i: TwoHoleUnit[A, B]): A |+| B = u
+  }
+
+  implicit val intHasIndexingMonoid: IndexingMonoid[Int, +] = new IndexingMonoid[Int, +] {
+    override type Empty = 0
+    override def empty: Empty = 0
+
+    override type |+|[A <: X[Int], B <: X[Int]] = (A + B)#OutInt
+    override def combine[A <: X[Int], B <: X[Int]](implicit p: A + B): A |+| B = p.value.asInstanceOf
   }
 
   type I2A[M[_], A, B, C] = M[A]
