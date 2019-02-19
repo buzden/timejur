@@ -15,7 +15,7 @@ package ru.buzden.typelevel
   * @tparam F described three-holed monad type
   */
 trait IndexedMonad[I, F[_, J, _ <: X[J]]] {
-  val im: IndexingMonoid[I]
+  val im: IndexingMonoidZZ[I]
   import im._
 
   def pure[A](a: A): F[A, I, Empty]
