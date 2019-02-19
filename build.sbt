@@ -15,6 +15,11 @@ libraryDependencies += "org.typelevel" %% "cats-core" % catsVersion
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9")
 addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4")
 
+// Typelevel stuff
+libraryDependencies ++= Seq(
+  "eu.timepit" %% "singleton-ops" % "0.3.1",
+)
+
 // Data types stuff
 libraryDependencies ++= Seq(
 )
