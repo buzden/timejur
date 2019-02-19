@@ -1,7 +1,5 @@
 package ru.buzden.typelevel
 
-import cats.Monad
-
 /**
   * Typeclass for the indexed monad with singleton index types.
   *
