@@ -1,7 +1,5 @@
 package ru.buzden.typelevel
 
-import cats.Monad
-
 /**
   * Typeclass for the indexed monad with singleton index types.
   *
@@ -16,8 +14,8 @@ import cats.Monad
   * @tparam I used general type of index
   * @tparam F described three-holed monad type
   */
-trait IndexedMonad[I, F[_, J, _ <: X[J]]] {
-  val im: IndexingMonoid[I]
+trait IndexedMonad[I, F[_, J, _ <: X[J]], Z[_, _]] {
+  val im: IndexingMonoid[I, Z]
   import im._
 
   def pure[A](a: A): F[A, I, Empty]
@@ -27,11 +25,11 @@ trait IndexedMonad[I, F[_, J, _ <: X[J]]] {
 object IndexedMonad {
   object syntax {
     implicit class IndexedMonadAnyAOps[A](val a: A) extends AnyVal {
-      def pure[I, F[_, _, _]](implicit iM: IndexedMonad[I, F]): F[A, I, iM.im.Empty] = iM.pure(a)
+      def pure[I, F[_, _, _], Z[_, _]](implicit iM: IndexedMonad[I, F, Z]): F[A, I, iM.im.Empty] = iM.pure(a)
     }
 
     implicit class IndexedMonadOps[I, F[_, _, _], A, I_A <: X[I]](val fa: F[A, I, I_A]) extends AnyVal {
-      def flatMap[B, I_B <: X[I]](f: A => F[B, I, I_B])(implicit iM: IndexedMonad[I, F]): F[B, I, iM.im.|+|[I_A, I_B]] =
+      def flatMap[B, I_B <: X[I], Z[_, _]](f: A => F[B, I, I_B])(implicit iM: IndexedMonad[I, F, Z]): F[B, I, iM.im.|+|[I_A, I_B]] =
         iM.flatMap[A, I_A, B, I_B](fa)(f)
     }
   }
