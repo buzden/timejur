@@ -5,8 +5,8 @@ import ru.buzden.typelevel._
 final case class IndexedTimedValue[A, T, ATime <: X[T]](value: A)
 
 object IndexedTimedValue {
-  implicit def indexedMonadForIndexedTimedValue[T, Z[_, _]](implicit im2: IndexingMonoid[T, Z]): IndexedMonad[T, IndexedTimedValue, Z] = new IndexedMonad[T, IndexedTimedValue, Z] {
-    override val im: IndexingMonoid[T, Z] = im2
+  implicit def indexedMonadForIndexedTimedValue[T: IndexingMonoidZZ]: IndexedMonad[T, IndexedTimedValue] = new IndexedMonad[T, IndexedTimedValue] {
+    override val im: IndexingMonoidZZ[T] = implicitly
     import im._
 
     override def pure[A](a: A): IndexedTimedValue[A, T, Empty] =
