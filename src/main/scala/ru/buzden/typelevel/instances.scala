@@ -26,7 +26,8 @@ object instances {
   }
 
   type I2A[M[_], A, B, C] = M[A]
-  implicit def monadIsIndexedMonad[I, M[_]: Monad, Z[_, _]](implicit im2: IndexingMonoid[I, Z]): IndexedMonad[I, I2A[M, ?, ?, ?], Z] = new IndexedMonad[I, I2A[M, ?, ?, ?], Z] {
+  implicit def monadIsIndexedMonad[I, M[_]: Monad, Z[_, _]](implicit im2: IndexingMonoid[I, Z]): IndexedMonad[I, I2A[M, ?, ?, ?]] = new IndexedMonad[I, I2A[M, ?, ?, ?]] {
+    type ZZ[A, B] = Z[A, B]
     override val im: IndexingMonoid[I, Z] = im2
 
     override def pure[A](a: A): M[A] = Monad[M].pure(a)
