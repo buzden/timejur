@@ -15,8 +15,7 @@ package ru.buzden.typelevel
   * @tparam F described three-holed monad type
   */
 trait IndexedMonad[I, F[_, J, _ <: X[J]]] {
-  type ZZ[_, _] // cheating type for indexing semigroup/monoid
-  val im: IndexingMonoid[I, ZZ]
+  val im: IndexingMonoid[I]
   import im._
 
   def pure[A](a: A): F[A, I, Empty]

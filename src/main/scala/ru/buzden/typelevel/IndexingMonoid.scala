@@ -1,6 +1,6 @@
 package ru.buzden.typelevel
 
-trait IndexingMonoid[T, Z[_, _]] extends IndexingSemigroup[T, Z] {
+trait IndexingMonoid[T] extends IndexingSemigroup[T] {
   type Empty <: X[T]
 
   def empty: Empty
@@ -8,6 +8,6 @@ trait IndexingMonoid[T, Z[_, _]] extends IndexingSemigroup[T, Z] {
 
 object IndexingMonoid {
   object syntax {
-    def empty[T, Z[_, _]](implicit im: IndexingMonoid[T, Z]): im.Empty = im.empty
+    def empty[T](implicit im: IndexingMonoid[T]): im.Empty = im.empty
   }
 }
