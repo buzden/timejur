@@ -1,6 +1,6 @@
 package ru.buzden.typelevel
 
-trait IndexedArrow[I, F[_, _, J, _ <: X[J]]] {
+trait IndexedArrow[I, F[_, _, J, _ <: J]] {
   val im: IndexingMonoidZZ[I]
   import im._
 
