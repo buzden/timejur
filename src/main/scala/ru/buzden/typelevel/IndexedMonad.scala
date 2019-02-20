@@ -13,18 +13,26 @@ package ru.buzden.typelevel
   * @tparam I used general type of index
   * @tparam F described three-holed monad type
   */
-trait IndexedMonad[I, F[_, _ <: I]] {
+trait IndexedMonadZZ[I, F[_, _ <: I]] {
   val im: IndexingMonoidZZ[I]
   import im._
 
   def pure[A](a: A): F[A, Empty]
+  def flatMapZZ[A, I_A <: I, B, I_B <: I](fa: F[A, I_A])(f: A => F[B, I_B])(implicit zz: im.ZZ[A, B]): F[B, I_A |+| I_B]
+}
+
+/** Simplified indexed monad that can implement its `flatMap` function without instance of monoid's `ZZ`. */
+trait IndexedMonad[I, F[_, _ <: I]] extends IndexedMonadZZ[I, F] {
+  import im._
+
+  override def flatMapZZ[A, I_A <: I, B, I_B <: I](fa: F[A, I_A])(f: A => F[B, I_B])(implicit zz: im.ZZ[A, B]): F[B, I_A |+| I_B] = flatMap(fa)(f)
   def flatMap[A, I_A <: I, B, I_B <: I](fa: F[A, I_A])(f: A => F[B, I_B]): F[B, I_A |+| I_B]
 }
 
 object IndexedMonad {
   object syntax {
     implicit class IndexedMonadAnyAOps[A](val a: A) extends AnyVal {
-      def pure[I, F[_, _]](implicit iM: IndexedMonad[I, F]): F[A, iM.im.Empty] = iM.pure(a)
+      def pure[I, F[_, _]](implicit iM: IndexedMonadZZ[I, F]): F[A, iM.im.Empty] = iM.pure(a)
     }
 
     implicit class IndexedMonadOps[I, F[_, _], A, I_A <: I](val fa: F[A, I_A]) extends AnyVal {
