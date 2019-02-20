@@ -1,7 +1,7 @@
 package ru.buzden.typelevel
 
 trait IndexedArrow[I, F[_, _, _ <: I]] {
-  val combiner: IndexingMonoidZZ[I]
+  val combiner: IndexingMonoid[I]
   import combiner._
 
   def lift[A, B](f: A => B): F[A, B, Empty]
