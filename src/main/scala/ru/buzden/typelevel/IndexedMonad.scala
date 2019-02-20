@@ -38,6 +38,16 @@ object IndexedMonad {
     implicit class IndexedMonadOps[I, F[_, _], A, I_A <: I](val fa: F[A, I_A]) extends AnyVal {
       def flatMap[B, I_B <: I](f: A => F[B, I_B])(implicit iM: IndexedMonad[I, F]): F[B, iM.im.|+|[I_A, I_B]] =
         iM.flatMap[A, I_A, B, I_B](fa)(f)
+
+      def flatMap[B, I_B <: I](f: A => F[B, I_B])(implicit iM: IndexedMonadZZ[I, F]): FlatMapCreation[I, F, A, B, I_A, I_B] =
+        new FlatMapCreation[I, F, A, B, I_A, I_B](fa, f)
+    }
+
+    // Workaround of lack of multiple implicit arguments lists
+    class FlatMapCreation[I, F[_, _ <: I], A, B, I_A <: I, I_B <: I]
+        (fa: F[A, I_A], f: A => F[B, I_B])(implicit val iM: IndexedMonadZZ[I, F]) {
+      import iM.im._
+      def apply(implicit zz: ZZ[A, B]): F[B, I_A |+| I_B] = iM.flatMapZZ[A, I_A, B, I_B](fa)(f)
     }
   }
 }
