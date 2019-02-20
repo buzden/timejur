@@ -5,7 +5,7 @@ import singleton.ops.+
 
 object instances {
   implicit val unitHasIndexingMonoid: IndexingMonoid[Unit] = new IndexingMonoid[Unit] {
-    val u: X[Unit] = ().asInstanceOf[X[Unit]] // I don't know why I need to coerce here.
+    val u: X[Unit] = ()
 
     override type Empty = X[Unit]
     override def empty: Empty = u
