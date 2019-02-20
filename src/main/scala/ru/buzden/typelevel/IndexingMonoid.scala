@@ -3,7 +3,7 @@ package ru.buzden.typelevel
 trait IndexingMonoid[T] extends IndexingMonoidZZ[T] with IndexingSemigroup[T]
 
 trait IndexingMonoidZZ[T] extends IndexingSemigroupZZ[T] {
-  type Empty <: X[T]
+  type Empty <: T
   def empty: Empty
 }
 

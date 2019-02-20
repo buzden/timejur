@@ -14,12 +14,12 @@ package ru.buzden.typelevel
   * @tparam I used general type of index
   * @tparam F described three-holed monad type
   */
-trait IndexedMonad[I, F[_, J, _ <: X[J]]] {
+trait IndexedMonad[I, F[_, J, _ <: J]] {
   val im: IndexingMonoidZZ[I]
   import im._
 
   def pure[A](a: A): F[A, I, Empty]
-  def flatMap[A, I_A <: X[I], B, I_B <: X[I]](fa: F[A, I, I_A])(f: A => F[B, I, I_B]): F[B, I, I_A |+| I_B]
+  def flatMap[A, I_A <: I, B, I_B <: I](fa: F[A, I, I_A])(f: A => F[B, I, I_B]): F[B, I, I_A |+| I_B]
 }
 
 object IndexedMonad {
@@ -28,8 +28,8 @@ object IndexedMonad {
       def pure[I, F[_, _, _], Z[_, _]](implicit iM: IndexedMonad[I, F]): F[A, I, iM.im.Empty] = iM.pure(a)
     }
 
-    implicit class IndexedMonadOps[I, F[_, _, _], A, I_A <: X[I]](val fa: F[A, I, I_A]) extends AnyVal {
-      def flatMap[B, I_B <: X[I]](f: A => F[B, I, I_B])(implicit iM: IndexedMonad[I, F]): F[B, I, iM.im.|+|[I_A, I_B]] =
+    implicit class IndexedMonadOps[I, F[_, _, _], A, I_A <: I](val fa: F[A, I, I_A]) extends AnyVal {
+      def flatMap[B, I_B <: I](f: A => F[B, I, I_B])(implicit iM: IndexedMonad[I, F]): F[B, I, iM.im.|+|[I_A, I_B]] =
         iM.flatMap[A, I_A, B, I_B](fa)(f)
     }
   }

@@ -5,13 +5,11 @@ import singleton.ops.+
 
 object instances {
   implicit val unitHasIndexingMonoid: IndexingMonoid[Unit] = new IndexingMonoid[Unit] {
-    val u: X[Unit] = ()
+    override type Empty = Unit
+    override def empty: Empty = ()
 
-    override type Empty = X[Unit]
-    override def empty: Empty = u
-
-    override type |+|[A, B] = X[Unit]
-    override def combine[A <: X[Unit], B <: X[Unit]]: A |+| B = u
+    override type |+|[A, B] = Unit
+    override def combine[A <: Unit, B <: Unit]: A |+| B = ()
   }
 
   implicit val intHasIndexingMonoid: IndexingMonoidZZ[Int] = new IndexingMonoidZZ[Int] {
@@ -20,8 +18,8 @@ object instances {
 
     type ZZ[A, B] = A + B
 
-    override type |+|[A <: X[Int], B <: X[Int]] = (A + B)#OutInt
-    override def combineZZ[A <: X[Int], B <: X[Int]](implicit p: A + B): A |+| B = p.value.asInstanceOf
+    override type |+|[A <: Int, B <: Int] = (A + B)#OutInt
+    override def combineZZ[A <: Int, B <: Int](implicit p: A + B): A |+| B = p.value.asInstanceOf
   }
 
   type I2A[M[_], A, B, C] = M[A]
@@ -30,7 +28,7 @@ object instances {
 
     override def pure[A](a: A): M[A] = Monad[M].pure(a)
 
-    override def flatMap[A, I_A <: X[I], B, I_B <: X[I]](fa: M[A])(f: A => M[B]): M[B] =
+    override def flatMap[A, I_A <: I, B, I_B <: I](fa: M[A])(f: A => M[B]): M[B] =
       Monad[M].flatMap(fa)(f)
   }
 }
