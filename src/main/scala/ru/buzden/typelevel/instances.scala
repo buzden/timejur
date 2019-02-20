@@ -22,8 +22,8 @@ object instances {
     override def combineZZ[A <: Int, B <: Int](implicit p: A + B): A |+| B = p.value.asInstanceOf
   }
 
-  type I2A[M[_], A, B, C] = M[A]
-  implicit def monadIsIndexedMonad[I: IndexingMonoidZZ, M[_]: Monad]: IndexedMonad[I, I2A[M, ?, ?, ?]] = new IndexedMonad[I, I2A[M, ?, ?, ?]] {
+  type I2A[M[_], A, B] = M[A]
+  implicit def monadIsIndexedMonad[I: IndexingMonoidZZ, M[_]: Monad]: IndexedMonad[I, I2A[M, ?, ?]] = new IndexedMonad[I, I2A[M, ?, ?]] {
     override val im: IndexingMonoidZZ[I] = implicitly
 
     override def pure[A](a: A): M[A] = Monad[M].pure(a)
