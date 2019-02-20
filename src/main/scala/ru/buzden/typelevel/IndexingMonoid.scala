@@ -4,6 +4,10 @@ trait IndexingMonoid[I] extends IndexingSemigroup[I] {
   type Empty <: I
 }
 
+class SimpleIndexingMonoid[I, E <: I, C[A <: I, B <: I] <: I] extends SimpleIndexingSemigroup[I, C] with IndexingMonoid[I] {
+  type Empty = E
+}
+
 trait IndexingMonoidEmerger[I, A <: I, B <: I] extends IndexingSemigroupEmerger[I, A, B] {
   override val proto: IndexingMonoid[I]
   import proto._

@@ -4,13 +4,9 @@ import cats.Monad
 import singleton.ops.+
 
 object instances {
-  implicit val unitHasIndexingMonoid: IndexingMonoid[Unit] {
-    type Empty = Unit
-    type |+|[A, B] = Unit
-  } = new IndexingMonoid[Unit] {
-    override type Empty = Unit
-    override type |+|[A, B] = Unit
-  }
+  type Unit2H[A, B] = Unit
+  implicit val unitHasIndexingMonoid: SimpleIndexingMonoid[Unit, Unit, Unit2H] =
+    new SimpleIndexingMonoid[Unit, Unit, Unit2H]
 
   implicit def unitHasIndexingMonoidEmerger[A <: Unit, B <: Unit]: IndexingMonoidEmerger[Unit, A, B] = new IndexingMonoidEmerger[Unit, A, B] {
     override val proto: unitHasIndexingMonoid.type = unitHasIndexingMonoid
@@ -20,13 +16,9 @@ object instances {
     override def combine: A |+| B = ()
   }
 
-  implicit val intHasIndexingMonoid: IndexingMonoid[Int] {
-    type Empty = 0
-    type |+|[A, B] = (A + B)#OutInt
-  } = new IndexingMonoid[Int] {
-    override type Empty = 0
-    override type |+|[A, B] = (A + B)#OutInt
-  }
+  type AddInt[A <: Int, B <: Int] = (A + B)#OutInt
+  implicit val intHasIndexingMonoid: SimpleIndexingMonoid[Int, 0, AddInt] =
+    new SimpleIndexingMonoid[Int, 0, AddInt]
 
   implicit def intHasIndexingMonoidEmerger[A <: Int, B <: Int](implicit p: A + B): IndexingMonoidEmerger[Int, A, B] = new IndexingMonoidEmerger[Int, A, B] {
     override val proto: intHasIndexingMonoid.type = intHasIndexingMonoid

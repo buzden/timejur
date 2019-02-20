@@ -4,6 +4,10 @@ trait IndexingSemigroup[I] {
   type |+|[A <: I, B <: I] <: I
 }
 
+class SimpleIndexingSemigroup[I, C[A <: I, B <: I] <: I] extends IndexingSemigroup[I] {
+  type |+|[A <: I, B <: I] = C[A, B]
+}
+
 trait IndexingSemigroupEmerger[I, A <: I, B <: I] {
   val proto: IndexingSemigroup[I]
   import proto.|+|
