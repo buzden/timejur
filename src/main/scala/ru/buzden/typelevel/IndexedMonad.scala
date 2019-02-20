@@ -24,7 +24,7 @@ trait IndexedMonad[I, F[_, _ <: I]] {
 object IndexedMonad {
   object syntax {
     implicit class IndexedMonadAnyAOps[A](val a: A) extends AnyVal {
-      def pure[I, F[_, _], Z[_, _]](implicit iM: IndexedMonad[I, F]): F[A, iM.im.Empty] = iM.pure(a)
+      def pure[I, F[_, _]](implicit iM: IndexedMonad[I, F]): F[A, iM.im.Empty] = iM.pure(a)
     }
 
     implicit class IndexedMonadOps[I, F[_, _], A, I_A <: I](val fa: F[A, I_A]) extends AnyVal {
