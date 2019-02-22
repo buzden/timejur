@@ -4,10 +4,6 @@ trait IndexingSemigroup[I] {
   type |+|[A <: I, B <: I] <: I
 }
 
-class SimpleIndexingSemigroup[I, C[A <: I, B <: I] <: I] extends IndexingSemigroup[I] {
-  type |+|[A <: I, B <: I] = C[A, B]
-}
-
 trait EmergingIndexingSemigroup[I] extends IndexingSemigroup[I] {
   /** Type of the result of the combining operation.
     *
