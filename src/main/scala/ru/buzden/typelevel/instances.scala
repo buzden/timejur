@@ -17,13 +17,13 @@ object instances {
 
   implicit val intHasIndexingMonoid: EmergingIndexingMonoid[Int] = new EmergingIndexingMonoid[Int] {
     override type EmptyR[A] = A
-    override type CombinationR[A, B, C] = C // todo to have IFT[A + B, ?]
+    override type CombinationR[A, B, C] = IFT[A + B, C]
 
     override type Empty = 0
     override type |+|[A, B] = (A + B)#OutInt
 
     override def empty: Empty = 0
-    override def combine[A, B]: CombinationR[A, B, A |+| B] = IFT { implicit p: A + B =>
+    override def combine[A, B]: CombinationR[A, B, A |+| B] = IFT { implicit p =>
       p.value.asInstanceOf
     }
   }
