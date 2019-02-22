@@ -8,7 +8,7 @@ object instances {
   implicit val unitHasIndexingMonoid: SimpleIndexingMonoid[Unit, Unit, Unit2H] =
     new SimpleIndexingMonoid[Unit, Unit, Unit2H]
 
-  implicit def unitHasIndexingMonoidEmerger[A <: Unit, B <: Unit]: IndexingMonoidEmerger[Unit, A, B] = new IndexingMonoidEmerger[Unit, A, B] {
+  implicit def unitHasIndexingMonoidEmerger[A <: Unit, B <: Unit]: EmergingIndexingMonoid[Unit, A, B] = new EmergingIndexingMonoid[Unit, A, B] {
     override val proto: unitHasIndexingMonoid.type = unitHasIndexingMonoid
     import proto._
 
@@ -20,7 +20,7 @@ object instances {
   implicit val intHasIndexingMonoid: SimpleIndexingMonoid[Int, 0, AddInt] =
     new SimpleIndexingMonoid[Int, 0, AddInt]
 
-  implicit def intHasIndexingMonoidEmerger[A <: Int, B <: Int](implicit p: A + B): IndexingMonoidEmerger[Int, A, B] = new IndexingMonoidEmerger[Int, A, B] {
+  implicit def intHasIndexingMonoidEmerger[A <: Int, B <: Int](implicit p: A + B): EmergingIndexingMonoid[Int, A, B] = new EmergingIndexingMonoid[Int, A, B] {
     override val proto: intHasIndexingMonoid.type = intHasIndexingMonoid
     import proto._
 
