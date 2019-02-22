@@ -17,18 +17,22 @@ trait IndexedMonad[I, F[_, _ <: I]] {
   val im: IndexingMonoid[I]
   import im._
 
-  def pure[A](a: A): F[A, Empty]
-  def flatMap[A, I_A <: I, B, I_B <: I](fa: F[A, I_A])(f: A => F[B, I_B]): F[B, I_A |+| I_B]
+  /** Type of the result of each operation */
+  type R[_]
+  // todo to think of individual result types per each operation
+
+  def pure[A](a: A): R[F[A, Empty]]
+  def flatMap[A, I_A <: I, B, I_B <: I](fa: F[A, I_A])(f: A => F[B, I_B]): R[F[B, I_A |+| I_B]]
 }
 
 object IndexedMonad {
   object syntax {
     implicit class IndexedMonadAnyAOps[A](val a: A) extends AnyVal {
-      def pure[I, F[_, _]](implicit iM: IndexedMonad[I, F]): F[A, iM.im.Empty] = iM.pure(a)
+      def pure[I, F[_, _]](implicit iM: IndexedMonad[I, F]): iM.R[F[A, iM.im.Empty]] = iM.pure(a)
     }
 
     implicit class IndexedMonadOps[I, F[_, _], A, I_A <: I](val fa: F[A, I_A]) extends AnyVal {
-      def flatMap[B, I_B <: I](f: A => F[B, I_B])(implicit iM: IndexedMonad[I, F]): F[B, iM.im.|+|[I_A, I_B]] =
+      def flatMap[B, I_B <: I](f: A => F[B, I_B])(implicit iM: IndexedMonad[I, F]): iM.R[F[B, iM.im.|+|[I_A, I_B]]] =
         iM.flatMap[A, I_A, B, I_B](fa)(f)
     }
   }
