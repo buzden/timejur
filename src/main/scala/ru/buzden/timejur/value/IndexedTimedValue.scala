@@ -6,6 +6,7 @@ final case class IndexedTimedValue[A, ATime](value: A)
 
 object IndexedTimedValue {
   implicit def indexedMonadForIndexedTimedValue[T: IndexingMonoid]: IndexedMonad[T, IndexedTimedValue] = new IndexedMonad[T, IndexedTimedValue] {
+    override type R[A] = A
     override val im: IndexingMonoid[T] = implicitly
     import im._
 
