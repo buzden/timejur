@@ -15,16 +15,17 @@ object instances {
     override def combine[A, B]: A |+| B = ()
   }
 
-  type AddInt[A <: Int, B <: Int] = (A + B)#OutInt
-  implicit val intHasIndexingMonoid: SimpleIndexingMonoid[Int, 0, AddInt] =
-    new SimpleIndexingMonoid[Int, 0, AddInt]
+  implicit val intHasIndexingMonoid: EmergingIndexingMonoid[Int] = new EmergingIndexingMonoid[Int] {
+    override type EmptyR[A] = A
+    override type CombinationR[A, B, C] = C // todo to have IFT[A + B, ?]
 
-  implicit def intHasIndexingMonoidEmerger[A <: Int, B <: Int](implicit p: A + B): EmergingIndexingMonoid[Int, A, B] = new EmergingIndexingMonoid[Int, A, B] {
-    override val proto: intHasIndexingMonoid.type = intHasIndexingMonoid
-    import proto._
+    override type Empty = 0
+    override type |+|[A, B] = (A + B)#OutInt
 
     override def empty: Empty = 0
-    override def combine: A |+| B = p.value.asInstanceOf
+    override def combine[A, B]: CombinationR[A, B, A |+| B] = IFT { implicit p: A + B =>
+      p.value.asInstanceOf
+    }
   }
 
   type I2A[M[_], A, B] = M[A]
