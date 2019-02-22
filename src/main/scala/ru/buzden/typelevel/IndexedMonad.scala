@@ -27,6 +27,13 @@ trait IndexedMonad[I, F[_, _ <: I]] {
   def flatMap[A, I_A <: I, B, I_B <: I](fa: F[A, I_A])(f: A => F[B, I_B]): FlatMapR[F[B, I_A |+| I_B]]
 }
 
+abstract class SimpleIndexedMonad[I: IndexingMonoid, F[_, _ <: I]] extends IndexedMonad[I, F] {
+  override val im: IndexingMonoid[I] = implicitly
+
+  override type PureR[A] = A
+  override type FlatMapR[A] = A
+}
+
 object IndexedMonad {
   object syntax {
     implicit class IndexedMonadAnyAOps[A](val a: A) extends AnyVal {
