@@ -16,7 +16,9 @@ package ru.buzden.typelevel
 trait IndexedMonad[I, F[_, _ <: I]] {
   val im: IndexingMonoid[I]
   import im._
-  // todo maybe to put indexing monoid into IFT which wraps `R[F[...]]`
+  // todo maybe to put indexing monoid as implicit into all operations instead of having a composition;
+  //      contra of this approach is that `PureR` and `FlatMapR` types cannot depend of `ComposeR` and
+  //      `EmptyR` types of used indexing monoid in this case.
 
   /** Type of the result of `flatMap` operation */
   type PureR[_]
