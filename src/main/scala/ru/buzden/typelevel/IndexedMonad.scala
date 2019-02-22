@@ -16,6 +16,7 @@ package ru.buzden.typelevel
 trait IndexedMonad[I, F[_, _ <: I]] {
   val im: IndexingMonoid[I]
   import im._
+  // todo maybe to put indexing monoid into IFT which wraps `R[F[...]]`
 
   /** Type of the result of each operation */
   type R[_]
