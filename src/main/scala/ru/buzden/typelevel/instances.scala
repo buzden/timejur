@@ -4,16 +4,15 @@ import cats.Monad
 import singleton.ops.+
 
 object instances {
-  type Unit2H[A, B] = Unit
-  implicit val unitHasIndexingMonoid: SimpleIndexingMonoid[Unit, Unit, Unit2H] =
-    new SimpleIndexingMonoid[Unit, Unit, Unit2H]
+  implicit val unitHasIndexingMonoid: EmergingIndexingMonoid[Unit] = new EmergingIndexingMonoid[Unit] {
+    override type EmptyR[A] = A
+    override type CombinationR[A, B, C] = C
 
-  implicit def unitHasIndexingMonoidEmerger[A <: Unit, B <: Unit]: EmergingIndexingMonoid[Unit, A, B] = new EmergingIndexingMonoid[Unit, A, B] {
-    override val proto: unitHasIndexingMonoid.type = unitHasIndexingMonoid
-    import proto._
+    override type Empty = Unit
+    override type |+|[A, B] = Unit
 
     override def empty: Empty = ()
-    override def combine: A |+| B = ()
+    override def combine[A, B]: A |+| B = ()
   }
 
   type AddInt[A <: Int, B <: Int] = (A + B)#OutInt
