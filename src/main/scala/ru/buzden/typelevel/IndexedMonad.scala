@@ -14,11 +14,15 @@ package ru.buzden.typelevel
   * @tparam F described three-holed monad type
   */
 trait IndexedMonad[I, F[_, _ <: I]] {
+  /** Indexing monoid used to determine the resulting type of the monad operations.
+    *
+    * Dependency on the indexing monoid was done as a field by two reasons:
+    * - to give an ability for `PureR` and `FlatMapR` types to depend on `EmptyR` and
+    *   `CombinationR` of some emerging indexing monoid;
+    * - to give an ability to implement monad instances specific to particular indexing monoid types.
+    */
   val im: IndexingMonoid[I]
   import im._
-  // todo maybe to put indexing monoid as implicit into all operations instead of having a composition;
-  //      contra of this approach is that `PureR` and `FlatMapR` types cannot depend of `ComposeR` and
-  //      `EmptyR` types of used indexing monoid in this case.
 
   /** Type of the result of `flatMap` operation */
   type PureR[_]
