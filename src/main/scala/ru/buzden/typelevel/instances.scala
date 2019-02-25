@@ -28,12 +28,12 @@ object instances {
     }
   }
 
-  type I2A[M[_], A, B] = M[A]
+  type I2A[M[_], A, I_A] = M[A]
   implicit def monadIsIndexedMonad[I: IndexingMonoid, M[_]: Monad]: IndexedMonad[I, I2A[M, ?, ?]] = new IndexedMonad[I, I2A[M, ?, ?]] {
     override val im: IndexingMonoid[I] = implicitly
 
     override type PureR[A] = A
-    override type FlatMapR[A, B, C] = C
+    override type FlatMapR[I_A, I_B, C] = C
 
     override def pure[A](a: A): M[A] = Monad[M].pure(a)
     override def flatMap[A, I_A <: I, B, I_B <: I](fa: M[A])(f: A => M[B]): M[B] = Monad[M].flatMap(fa)(f)

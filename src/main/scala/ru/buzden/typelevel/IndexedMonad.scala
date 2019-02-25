@@ -42,7 +42,7 @@ trait SubordinateIndexedMonad[I, F[_, _ <: I]] extends IndexedMonad[I, F] {
   override val im: EmergingIndexingMonoid[I]
 
   override type PureR[A] = im.EmptyR[A]
-  override type FlatMapR[A, B, C] = im.CombinationR[A, B, C]
+  override type FlatMapR[I_A, I_B, C] = im.CombinationR[I_A, I_B, C]
 }
 
 object IndexedMonad {
