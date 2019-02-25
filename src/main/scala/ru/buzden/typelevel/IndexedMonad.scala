@@ -24,7 +24,7 @@ trait IndexedMonad[I, F[_, _ <: I]] {
   val im: IndexingMonoid[I]
   import im._
 
-  /** Type of the result of `flatMap` operation */
+  /** Type of the result of `pure` operation */
   type PureR[_]
   /** Type of the result of `flatMap` operation */
   type FlatMapR[_]
