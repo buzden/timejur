@@ -44,6 +44,13 @@ abstract class SimpleIndexedMonad[I: IndexingMonoid, F[_, _ <: I]] extends Index
   override type FlatMapR[A, B, C] = C
 }
 
+abstract class OrdinaryIndexedMonad[I: EmergingIndexingMonoid, F[_, _ <: I]] extends IndexedMonad[I, F] {
+  override val im: EmergingIndexingMonoid[I] = implicitly
+
+  override type PureR[A] = im.EmptyR[A]
+  override type FlatMapR[A, B, C] = im.CombinationR[A, B, C]
+}
+
 object IndexedMonad {
   object syntax {
     implicit class IndexedMonadAnyAOps[A](val a: A) extends AnyVal {
