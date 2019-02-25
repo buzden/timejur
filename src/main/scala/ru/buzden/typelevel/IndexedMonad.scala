@@ -37,6 +37,7 @@ trait IndexedMonad[I, F[_, _ <: I]] {
   def flatMap[A, I_A <: I, B, I_B <: I](fa: F[A, I_A])(f: A => F[B, I_B]): FlatMapR[A, B, F[B, I_A |+| I_B]]
 }
 
+/** Special case of the indexed monad where result types are dictated by emerging indexing monoid */
 trait SubordinateIndexedMonad[I, F[_, _ <: I]] extends IndexedMonad[I, F] {
   override val im: EmergingIndexingMonoid[I]
 
