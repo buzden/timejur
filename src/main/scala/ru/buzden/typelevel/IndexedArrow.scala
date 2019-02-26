@@ -2,7 +2,8 @@ package ru.buzden.typelevel
 
 trait IndexedArrow[I, F[_, _, _ <: I]] {
   val combiner: IndexingMonoid[I]
-  import combiner._
+  import combiner.Empty
+  type |>>|[A, B] = combiner.|+|[A, B]
 
   type LiftR[R]
   type FirstR[I_AB, R]
@@ -12,5 +13,5 @@ trait IndexedArrow[I, F[_, _, _ <: I]] {
 
   def first[A, B, C, I_AB <: I](fa: F[A, B, I_AB]): FirstR[I_AB, F[(A, C), (B, C), I_AB]]
 
-  def compose[A, B, C, I_AB <: I, I_BC <: I](f: F[B, C, I_BC], g: F[A, B, I_AB]): ComposeR[I_AB, I_BC, F[A, C, I_AB |+| I_BC]]
+  def compose[A, B, C, I_AB <: I, I_BC <: I](f: F[B, C, I_BC], g: F[A, B, I_AB]): ComposeR[I_AB, I_BC, F[A, C, I_AB |>>| I_BC]]
 }
