@@ -1,9 +1,9 @@
 package ru.buzden.typelevel
 
 trait IndexedArrow[I, F[_, _, _ <: I]] {
-  val combiner: IndexingMonoid[I]
-  import combiner.Empty
-  type |>>|[A, B] = combiner.|+|[A, B]
+  val composer: IndexingMonoid[I]
+  import composer.Empty
+  type |>>|[A, B] = composer.|+|[A, B]
 
   type LiftR[R]
   type FirstR[I_AB, R]
