@@ -1,4 +1,4 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
 trait IndexedArrow[I, F[_, _, _ <: I]] {
   val composer: IndexingMonoid[I]

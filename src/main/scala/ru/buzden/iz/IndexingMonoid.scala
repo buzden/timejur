@@ -1,4 +1,4 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
 trait IndexingMonoid[I] extends IndexingSemigroup[I] {
   type Empty <: I

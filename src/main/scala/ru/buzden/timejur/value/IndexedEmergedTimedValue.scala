@@ -1,8 +1,8 @@
 package ru.buzden.timejur.value
 
 import cats.Functor
-import ru.buzden.typelevel._
 import cats.syntax.functor._
+import ru.buzden.iz._
 
 /** Timed value that contains time both at the type and value level */
 final case class IndexedEmergedTimedValue[A, ATime](value: A, time: ATime)

@@ -1,4 +1,4 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
 trait IndexingSemigroup[I] {
   type |+|[A <: I, B <: I] <: I

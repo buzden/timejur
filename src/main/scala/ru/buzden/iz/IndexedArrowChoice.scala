@@ -1,4 +1,4 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
 trait IndexedArrowChoice[I, F[_, _, _ <: I]] extends IndexedArrow[I, F] {
   val chooser: IndexingSemigroup[I]

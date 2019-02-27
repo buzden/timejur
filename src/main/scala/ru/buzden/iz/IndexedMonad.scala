@@ -1,4 +1,4 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
 /**
   * Typeclass for the indexed monad with singleton index types.

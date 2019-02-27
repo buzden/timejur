@@ -1,6 +1,6 @@
 package ru.buzden.timejur.value
 
-import ru.buzden.typelevel._
+import ru.buzden.iz._
 
 /** Timed value that contains time only at the type level */
 final case class IndexedTimedValue[A, ATime](value: A)
