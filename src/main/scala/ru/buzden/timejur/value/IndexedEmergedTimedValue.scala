@@ -8,7 +8,7 @@ import ru.buzden.iz._
 final case class IndexedEmergedTimedValue[A, ATime](value: A, time: ATime)
 
 object IndexedEmergedTimedValue {
-  implicit def indexedMonadForIndexedTimedValue[T: EmergingIndexingMonoid]: IndexedMonad[T, IndexedEmergedTimedValue] = new IndexedMonad[T, IndexedEmergedTimedValue] {
+  implicit def indexedMonadForIndexedTimedValue[T: EmergingIndexingMonoid]: IzMonad[T, IndexedEmergedTimedValue] = new IzMonad[T, IndexedEmergedTimedValue] {
     override val im: EmergingIndexingMonoid[T] = implicitly
     import im._
 

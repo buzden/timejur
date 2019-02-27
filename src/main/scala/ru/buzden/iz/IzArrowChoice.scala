@@ -1,6 +1,6 @@
 package ru.buzden.iz
 
-trait IndexedArrowChoice[I, F[_, _, _ <: I]] extends IndexedArrow[I, F] {
+trait IzArrowChoice[I, F[_, _, _ <: I]] extends IzArrow[I, F] {
   val chooser: IndexingSemigroup[I]
   type |\|[A <: I, B <: I] = chooser.|+|[A, B]
 
