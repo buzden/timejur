@@ -4,7 +4,9 @@ import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.LessEqual
 import ru.buzden.typelevel._
 
-final case class TypelevellyTimed[-A, +B, T, MaxT <: T](f: A => (B, T Refined LessEqual[MaxT]))
+// todo It seems that `MaxT` should be `<: T`, but it is not provided when
+//      we write `IndexedArrowChoice[T, TypelevellyTimed[?, ?, T, ?]]`. Compiler bug or my misunderstanding?
+final case class TypelevellyTimed[-A, +B, T, MaxT](f: A => (B, T Refined LessEqual[MaxT]))
 
 object TypelevellyTimed {
   implicit def typelevellyTimedIndexedArrow[T](co: EmergingIndexingMonoid[T], ch: EmergingIndexingSemigroup[T]): IndexedArrowChoice[T, TypelevellyTimed[?, ?, T, ?]] = new IndexedArrowChoice[T, TypelevellyTimed[?, ?, T, ?]] {
