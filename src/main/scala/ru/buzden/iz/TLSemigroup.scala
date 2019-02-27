@@ -1,9 +1,11 @@
 package ru.buzden.iz
 
+/** Type-level semigroup */
 trait TLSemigroup[I] {
   type |+|[A <: I, B <: I] <: I
 }
 
+/** Type-level semigroup with an ability to emerge appropriate value */
 trait EmergingTLSemigroup[I] extends TLSemigroup[I] {
   /** Type of the result of the combining operation.
     *
