@@ -4,7 +4,7 @@ import cats.Monad
 import singleton.ops.+
 
 object instances {
-  implicit val unitHasIndexingMonoid: EmergingIndexingMonoid[Unit] = new EmergingIndexingMonoid[Unit] {
+  implicit val unitHasIndexingMonoid: EmergingTLMonoid[Unit] = new EmergingTLMonoid[Unit] {
     override type EmptyR[A] = A
     override type CombinationR[A, B, C] = C
 
@@ -15,7 +15,7 @@ object instances {
     override def combine[A, B]: A |+| B = ()
   }
 
-  implicit val intHasIndexingMonoid: EmergingIndexingMonoid[Int] = new EmergingIndexingMonoid[Int] {
+  implicit val intHasIndexingMonoid: EmergingTLMonoid[Int] = new EmergingTLMonoid[Int] {
     override type EmptyR[A] = A
     override type CombinationR[A, B, C] = IFT[A + B, C]
 
@@ -29,8 +29,8 @@ object instances {
   }
 
   type I2A[M[_], A, I_A] = M[A]
-  implicit def monadIsIndexedMonad[I: IndexingMonoid, M[_]: Monad]: IzMonad[I, I2A[M, ?, ?]] = new IzMonad[I, I2A[M, ?, ?]] {
-    override val im: IndexingMonoid[I] = implicitly
+  implicit def monadIsIndexedMonad[I: TLMonoid, M[_]: Monad]: IzMonad[I, I2A[M, ?, ?]] = new IzMonad[I, I2A[M, ?, ?]] {
+    override val im: TLMonoid[I] = implicitly
 
     override type PureR[A] = A
     override type FlatMapR[I_A, I_B, C] = C
