@@ -2,16 +2,16 @@ package ru.buzden.timejur.computation
 
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.LessEqual
-import ru.buzden.typelevel._
+import ru.buzden.iz._
 
 // todo It seems that `MaxT` should be `<: T`, but it is not provided when
 //      we write `IndexedArrowChoice[T, TypelevellyTimed[?, ?, T, ?]]`. Compiler bug or my misunderstanding?
 final case class TypelevellyTimed[-A, +B, T, MaxT](f: A => (B, T Refined LessEqual[MaxT]))
 
 object TypelevellyTimed {
-  implicit def typelevellyTimedIndexedArrow[T](co: EmergingIndexingMonoid[T], ch: EmergingIndexingSemigroup[T]): IndexedArrowChoice[T, TypelevellyTimed[?, ?, T, ?]] = new IndexedArrowChoice[T, TypelevellyTimed[?, ?, T, ?]] {
-    override val composer: EmergingIndexingMonoid[T] = co
-    override val chooser: EmergingIndexingSemigroup[T] = ch
+  implicit def typelevellyTimedIndexedArrow[T](co: EmergingTLMonoid[T], ch: EmergingTLSemigroup[T]): IzArrowChoice[T, TypelevellyTimed[?, ?, T, ?]] = new IzArrowChoice[T, TypelevellyTimed[?, ?, T, ?]] {
+    override val composer: EmergingTLMonoid[T] = co
+    override val chooser: EmergingTLSemigroup[T] = ch
 
     import composer.Empty
 
