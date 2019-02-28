@@ -1,4 +1,4 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
 import cats.arrow.ArrowChoice
 import cats.instances.function._

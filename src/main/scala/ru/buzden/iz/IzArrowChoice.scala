@@ -1,7 +1,7 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
-trait IndexedArrowChoice[I, F[_, _, _ <: I]] extends IndexedArrow[I, F] {
-  val chooser: IndexingSemigroup[I]
+trait IzArrowChoice[I, F[_, _, _ <: I]] extends IzArrow[I, F] {
+  val chooser: TLSemigroup[I]
   type |\|[A <: I, B <: I] = chooser.|+|[A, B]
 
   type ChooseR[I_AC, I_BD, R]

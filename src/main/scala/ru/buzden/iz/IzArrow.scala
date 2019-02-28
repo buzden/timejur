@@ -1,7 +1,7 @@
-package ru.buzden.typelevel
+package ru.buzden.iz
 
-trait IndexedArrow[I, F[_, _, _ <: I]] {
-  val composer: IndexingMonoid[I]
+trait IzArrow[I, F[_, _, _ <: I]] {
+  val composer: TLMonoid[I]
   import composer.Empty
   type |>>|[A <: I, B <: I] = composer.|+|[A, B]
 
