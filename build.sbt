@@ -18,6 +18,7 @@ addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4")
 // Typelevel stuff
 libraryDependencies ++= Seq(
   "eu.timepit" %% "singleton-ops" % "0.3.1",
+  "eu.timepit" %% "refined" % "0.9.4",
 )
 
 // Data types stuff
