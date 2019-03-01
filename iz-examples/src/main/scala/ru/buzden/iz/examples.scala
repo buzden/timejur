@@ -3,7 +3,7 @@ package ru.buzden.iz
 import cats.Monad
 import singleton.ops.+
 
-object instances {
+object examples {
   implicit val unitHasIndexingMonoid: EmergingTLMonoid[Unit] = new EmergingTLMonoid[Unit] {
     override type EmptyR[A] = A
     override type CombinationR[A, B, C] = C
