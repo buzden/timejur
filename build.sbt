@@ -3,18 +3,16 @@ ThisBuild / version := "0.1"
 lazy val catsVersion = "1.6.0"
 lazy val specs2Version = "4.4.1"
 
-scalaVersion := "2.13.0-M5"
-
-addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9")
-addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4")
-
 lazy val commonScala2Settings = Seq(
   // General stuff
+  scalaVersion := "2.13.0-M5",
   scalacOptions ++= Seq(
     "-language:higherKinds",
   ),
 
   libraryDependencies += "org.typelevel" %% "cats-core" % catsVersion,
+  libraryDependencies += compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9"),
+  libraryDependencies += compilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4"),
 
   // Data types stuff
   libraryDependencies ++= Seq(
