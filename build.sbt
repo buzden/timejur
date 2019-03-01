@@ -44,11 +44,11 @@ lazy val root = (project in file("."))
   .settings(
     name := "timejur",
   )
-  .aggregate(timejurCore, timejurTypelevel)
+  .aggregate(timejurBasic, timejurTypelevel)
 
-lazy val timejurCore = (project in file("core"))
+lazy val timejurBasic = (project in file("basic"))
   .settings(
-    name := "timejur-core",
+    name := "timejur-basic",
     commonScala2Settings,
   )
 
