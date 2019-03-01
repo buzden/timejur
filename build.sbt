@@ -58,9 +58,16 @@ lazy val izCore = (project in file("iz-core"))
   .settings(
     name := "iz-core",
     commonScala2Settings,
+  )
+
+lazy val izExamples = (project in file("iz-examples"))
+  .settings(
+    name := "iz-examples",
+    commonScala2Settings,
     libraryDependencies ++= Seq(
       "eu.timepit" %% "singleton-ops" % "0.3.1",
     ),
   )
+  .dependsOn(izCore)
 
 // todo to add izLaws as soon as available and to make izCore to depend on (izLaws % "test").
