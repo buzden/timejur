@@ -30,14 +30,6 @@ lazy val commonScala2Settings = Seq(
   logBuffered   in Test := false,
 )
 
-lazy val commonTypelevelSettings = Seq(
-  // Typelevel stuff
-  libraryDependencies ++= Seq(
-    "eu.timepit" %% "singleton-ops" % "0.3.1",
-    "eu.timepit" %% "refined" % "0.9.4",
-  ),
-)
-
 /////////// Projects ///////////
 
 lazy val root = (project in file("."))
@@ -56,7 +48,9 @@ lazy val timejurTypelevel = (project in file("typelevel"))
   .settings(
     name := "timejur-iz",
     commonScala2Settings,
-    commonTypelevelSettings,
+    libraryDependencies ++= Seq(
+      "eu.timepit" %% "refined" % "0.9.4",
+    ),
   )
   .dependsOn(izCore)
 
@@ -64,7 +58,9 @@ lazy val izCore = (project in file("iz-core"))
   .settings(
     name := "iz-core",
     commonScala2Settings,
-    commonTypelevelSettings,
+    libraryDependencies ++= Seq(
+      "eu.timepit" %% "singleton-ops" % "0.3.1",
+    ),
   )
 
 // todo to add izLaws as soon as available and to make izCore to depend on (izLaws % "test").
