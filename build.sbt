@@ -52,7 +52,7 @@ lazy val timejurTypelevel = (project in file("typelevel"))
       "eu.timepit" %% "refined" % "0.9.4",
     ),
   )
-  .dependsOn(izCore)
+  .dependsOn(izCore, izExamples)
 
 lazy val izCore = (project in file("iz-core"))
   .settings(
