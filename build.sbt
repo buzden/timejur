@@ -38,3 +38,33 @@ lazy val commonTypelevelSettings = Seq(
   ),
 )
 
+/////////// Projects ///////////
+
+lazy val root = (project in file("."))
+  .settings(
+    name := "timejur",
+  )
+  .aggregate(timejurCore, timejurTypelevel)
+
+lazy val timejurCore = (project in file("core"))
+  .settings(
+    name := "timejur-core",
+    commonScala2Settings,
+  )
+
+lazy val timejurTypelevel = (project in file("typelevel"))
+  .settings(
+    name := "timejur-iz",
+    commonScala2Settings,
+    commonTypelevelSettings,
+  )
+  .dependsOn(izCore)
+
+lazy val izCore = (project in file("iz-core"))
+  .settings(
+    name := "iz-core",
+    commonScala2Settings,
+    commonTypelevelSettings,
+  )
+
+// todo to add izLaws as soon as available and to make izCore to depend on (izLaws % "test").
