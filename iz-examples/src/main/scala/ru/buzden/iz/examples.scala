@@ -12,7 +12,7 @@ object examples {
     override type |+|[A, B] = Unit
 
     override def empty: Empty = ()
-    override def combine[A, B]: A |+| B = ()
+    override def combine[A, B](a: A, b: B): A |+| B = ()
   }
 
   implicit val intHasIndexingMonoid: TwoFacedMonoid[Int] = new TwoFacedMonoid[Int] {
@@ -23,7 +23,7 @@ object examples {
     override type |+|[A, B] = (A + B)#OutInt
 
     override def empty: Empty = 0
-    override def combine[A, B]: CombineR[A, B, A |+| B] = IFT { implicit p =>
+    override def combine[A, B](a: A, b: B): CombineR[A, B, A |+| B] = IFT { implicit p =>
       p.value.asInstanceOf
     }
   }

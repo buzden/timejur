@@ -15,13 +15,13 @@ trait TwoFacedSemigroup[I] extends TypeLevelSemigroup[I] {
     */
   type CombineR[_, _, _]
 
-  def combine[A <: I, B <: I]: CombineR[A, B, A |+| B]
+  def combine[A <: I, B <: I](a: A, b: B): CombineR[A, B, A |+| B]
 }
 
 object TypeLevelSemigroup {
   object syntax {
     implicit class IndexedSemigroupOps[I, A <: I](val a: A) extends AnyVal {
-      def |+|[B <: I](b: B)(implicit eis: TwoFacedSemigroup[I]): eis.CombineR[A, B, eis.|+|[A, B]] = eis.combine
+      def |+|[B <: I](b: B)(implicit eis: TwoFacedSemigroup[I]): eis.CombineR[A, B, eis.|+|[A, B]] = eis.combine(a, b)
     }
   }
 }
