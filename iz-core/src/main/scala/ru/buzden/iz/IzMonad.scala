@@ -21,7 +21,7 @@ trait IzMonad[I, F[_, _ <: I]] {
     *   `CombinationR` of some emerging indexing monoid;
     * - to give an ability to implement monad instances specific to particular indexing monoid types.
     */
-  val im: TLMonoid[I]
+  val im: TypeLevelMonoid[I]
   import im._
 
   /** Type of the result of `pure` operation */

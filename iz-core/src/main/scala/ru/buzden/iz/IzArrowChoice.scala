@@ -1,7 +1,7 @@
 package ru.buzden.iz
 
 trait IzArrowChoice[I, F[_, _, _ <: I]] extends IzArrow[I, F] {
-  val chooser: TLSemigroup[I]
+  val chooser: TypeLevelSemigroup[I]
   type |\|[A <: I, B <: I] = chooser.|+|[A, B]
 
   type ChooseR[I_AC, I_BD, R]

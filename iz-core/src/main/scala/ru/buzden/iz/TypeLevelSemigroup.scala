@@ -1,12 +1,12 @@
 package ru.buzden.iz
 
 /** Type-level semigroup */
-trait TLSemigroup[I] {
+trait TypeLevelSemigroup[I] {
   type |+|[A <: I, B <: I] <: I
 }
 
 /** Type-level semigroup with an ability to emerge appropriate value */
-trait EmergingTLSemigroup[I] extends TLSemigroup[I] {
+trait TwoFacedSemigroup[I] extends TypeLevelSemigroup[I] {
   /** Type of the result of the combining operation.
     *
     * This type is three-holed: first two are for types of combination
@@ -18,10 +18,10 @@ trait EmergingTLSemigroup[I] extends TLSemigroup[I] {
   def combine[A <: I, B <: I]: CombinationR[A, B, A |+| B]
 }
 
-object TLSemigroup {
+object TypeLevelSemigroup {
   object syntax {
     implicit class IndexedSemigroupOps[I, A <: I](val a: A) extends AnyVal {
-      def |+|[B <: I](b: B)(implicit eis: EmergingTLSemigroup[I]): eis.CombinationR[A, B, eis.|+|[A, B]] = eis.combine
+      def |+|[B <: I](b: B)(implicit eis: TwoFacedSemigroup[I]): eis.CombinationR[A, B, eis.|+|[A, B]] = eis.combine
     }
   }
 }

@@ -8,8 +8,8 @@ import ru.buzden.iz._
 final case class IzEmergedTimedValue[A, ATime](value: A, time: ATime)
 
 object IzEmergedTimedValue {
-  implicit def indexedMonadForIndexedTimedValue[T: EmergingTLMonoid]: IzMonad[T, IzEmergedTimedValue] = new IzMonad[T, IzEmergedTimedValue] {
-    override val im: EmergingTLMonoid[T] = implicitly
+  implicit def indexedMonadForIndexedTimedValue[T: TwoFacedMonoid]: IzMonad[T, IzEmergedTimedValue] = new IzMonad[T, IzEmergedTimedValue] {
+    override val im: TwoFacedMonoid[T] = implicitly
     import im._
 
     override type PureR[A] = Functor[EmptyR] IFT EmptyR[A]
