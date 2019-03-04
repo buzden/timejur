@@ -6,7 +6,7 @@ import singleton.ops.+
 object examples {
   implicit val unitHasIndexingMonoid: TwoFacedMonoid[Unit] = new TwoFacedMonoid[Unit] {
     override type EmptyR[A] = A
-    override type CombinationR[A, B, C] = C
+    override type CombineR[A, B, C] = C
 
     override type Empty = Unit
     override type |+|[A, B] = Unit
@@ -17,13 +17,13 @@ object examples {
 
   implicit val intHasIndexingMonoid: TwoFacedMonoid[Int] = new TwoFacedMonoid[Int] {
     override type EmptyR[A] = A
-    override type CombinationR[A, B, C] = IFT[A + B, C]
+    override type CombineR[A, B, C] = IFT[A + B, C]
 
     override type Empty = 0
     override type |+|[A, B] = (A + B)#OutInt
 
     override def empty: Empty = 0
-    override def combine[A, B]: CombinationR[A, B, A |+| B] = IFT { implicit p =>
+    override def combine[A, B]: CombineR[A, B, A |+| B] = IFT { implicit p =>
       p.value.asInstanceOf
     }
   }
