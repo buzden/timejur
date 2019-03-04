@@ -9,9 +9,9 @@ import ru.buzden.iz._
 final case class IzTimed[-A, +B, T, MaxT](f: A => (B, T Refined LessEqual[MaxT]))
 
 object IzTimed {
-  implicit def typelevellyTimedIndexedArrow[T](co: EmergingTLMonoid[T], ch: EmergingTLSemigroup[T]): IzArrowChoice[T, IzTimed[?, ?, T, ?]] = new IzArrowChoice[T, IzTimed[?, ?, T, ?]] {
-    override val composer: EmergingTLMonoid[T] = co
-    override val chooser: EmergingTLSemigroup[T] = ch
+  implicit def typelevellyTimedIndexedArrow[T](co: TwoFacedMonoid[T], ch: TwoFacedSemigroup[T]): IzArrowChoice[T, IzTimed[?, ?, T, ?]] = new IzArrowChoice[T, IzTimed[?, ?, T, ?]] {
+    override val composer: TwoFacedMonoid[T] = co
+    override val chooser: TwoFacedSemigroup[T] = ch
 
     import composer.Empty
 

@@ -6,8 +6,8 @@ import ru.buzden.iz._
 final case class IzTimedValue[A, ATime](value: A)
 
 object IzTimedValue {
-  implicit def indexedMonadForIndexedTimedValue[T: TLMonoid]: IzMonad[T, IzTimedValue] = new IzMonad[T, IzTimedValue] {
-    override val im: TLMonoid[T] = implicitly
+  implicit def indexedMonadForIndexedTimedValue[T: TypeLevelMonoid]: IzMonad[T, IzTimedValue] = new IzMonad[T, IzTimedValue] {
+    override val im: TypeLevelMonoid[T] = implicitly
     import im._
 
     override type PureR[A] = A

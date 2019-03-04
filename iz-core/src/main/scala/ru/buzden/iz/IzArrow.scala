@@ -1,7 +1,7 @@
 package ru.buzden.iz
 
 trait IzArrow[I, F[_, _, _ <: I]] {
-  val composer: TLMonoid[I]
+  val composer: TypeLevelMonoid[I]
   import composer.Empty
   type |>>|[A <: I, B <: I] = composer.|+|[A, B]
 
