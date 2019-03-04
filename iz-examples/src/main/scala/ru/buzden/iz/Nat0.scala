@@ -16,8 +16,14 @@ object Nat0 {
     override def add[N <: Nat0](n: N): Succ[p.Sum[N]] = Succ(p.add(n))
   }
 
-  implicit val nat0HasTLMonoid: TypeLevelMonoid[Nat0] = new TypeLevelMonoid[Nat0] {
+  implicit val nat0HasTLMonoid: TwoFacedMonoid[Nat0] = new TwoFacedMonoid[Nat0] {
     override type Empty = Zero.type
-    override type |+|[A <: Nat0, B <: Nat0] = A#Sum[B] // where can I find the value of A?
+    override type |+|[A <: Nat0, B <: Nat0] = A#Sum[B]
+
+    override type EmptyR[R] = R
+    override def empty: Zero.type = Zero
+
+    override type CombineR[A, B, R] = R
+    override def combine[A <: Nat0, B <: Nat0](a: A, b: B): A#Sum[B] = a `add` b
   }
 }
