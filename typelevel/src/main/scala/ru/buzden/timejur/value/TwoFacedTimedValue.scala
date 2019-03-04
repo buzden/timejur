@@ -19,8 +19,7 @@ object TwoFacedTimedValue {
       empty `map` { e => TwoFacedTimedValue[A, Empty](a, e) }
     }
 
-    override def flatMap[A, ATime <: T, B, BTime <: T]
-    (fa: TwoFacedTimedValue[A, ATime])(f: A => TwoFacedTimedValue[B, BTime]): Functor[CombineR[ATime, BTime, ?]] IFT CombineR[ATime, BTime, TwoFacedTimedValue[B, ATime |+| BTime]] = IFT { implicit fc =>
+    override def flatMap[A, ATime <: T, B, BTime <: T](fa: TwoFacedTimedValue[A, ATime])(f: A => TwoFacedTimedValue[B, BTime]): Functor[CombineR[ATime, BTime, ?]] IFT CombineR[ATime, BTime, TwoFacedTimedValue[B, ATime |+| BTime]] = IFT { implicit fc =>
       val fb = f(fa.value)
       im.combine[ATime, BTime](fa.time, fb.time) `map` { s => TwoFacedTimedValue[B, ATime |+| BTime](fb.value, s) }
     }
