@@ -10,14 +10,10 @@ object IzTimedValue {
     override val im: TypeLevelMonoid[T] = implicitly
     import im._
 
-    override type PureR[A] = A
-    override type FlatMapR[ATime, BTime, C] = C
-
     override def pure[A](a: A): IzTimedValue[A, Empty] =
       IzTimedValue[A, Empty](a)
 
-    override def flatMap[A, ATime <: T, B, BTime <: T]
-    (fa: IzTimedValue[A, ATime])(f: A => IzTimedValue[B, BTime]): IzTimedValue[B, ATime |+| BTime] =
+    override def flatMap[A, ATime <: T, B, BTime <: T](fa: IzTimedValue[A, ATime])(f: A => IzTimedValue[B, BTime]): IzTimedValue[B, ATime |+| BTime] =
       IzTimedValue[B, ATime |+| BTime](f(fa.value).value)
   }
 }
