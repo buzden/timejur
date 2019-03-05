@@ -65,7 +65,6 @@ lazy val izExamples = (project in file("iz-examples"))
     name := "iz-examples",
     commonScala2Settings,
     libraryDependencies ++= Seq(
-      "eu.timepit" %% "singleton-ops" % "0.3.1",
     ),
   )
   .dependsOn(izCore)
