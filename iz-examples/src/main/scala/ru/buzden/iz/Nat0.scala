@@ -20,8 +20,8 @@ object Nat0 {
     override type Empty = Zero.type
     override type |+|[A <: Nat0, B <: Nat0] = A#Sum[B]
 
-    override def empty: Zero.type = Zero
+    override def empty: Empty = Zero
 
-    override def combine[A <: Nat0, B <: Nat0](a: A, b: B): A#Sum[B] = a `add` b
+    override def combine[A <: Nat0, B <: Nat0](a: A, b: B): A |+| B = a `add` b
   }
 }
