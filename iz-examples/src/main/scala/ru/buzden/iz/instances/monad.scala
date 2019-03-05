@@ -5,7 +5,7 @@ import ru.buzden.iz._
 
 object monad {
   type I2A[M[_], A, I_A] = M[A]
-  implicit def monadIsIndexedMonad[I: TypeLevelMonoid, M[_]: Monad]: IzMonad[I, I2A[M, ?, ?]] = new IzMonad[I, I2A[M, ?, ?]] {
+  implicit def monadIsIzMonad[I: TypeLevelMonoid, M[_]: Monad]: IzMonad[I, I2A[M, ?, ?]] = new IzMonad[I, I2A[M, ?, ?]] {
     override val im: TypeLevelMonoid[I] = implicitly
 
     override type PureR[A] = A

@@ -20,7 +20,7 @@ trait TwoFacedSemigroup[I] extends TypeLevelSemigroup[I] {
 
 object TypeLevelSemigroup {
   object syntax {
-    implicit class IndexedSemigroupOps[I, A <: I](val a: A) extends AnyVal {
+    implicit class IzSemigroupOps[I, A <: I](val a: A) extends AnyVal {
       def |+|[B <: I](b: B)(implicit eis: TwoFacedSemigroup[I]): eis.CombineR[A, B, eis.|+|[A, B]] = eis.combine(a, b)
     }
   }
