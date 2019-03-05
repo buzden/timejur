@@ -5,12 +5,12 @@ trait TypeLevelSemigroup[I] {
   type |+|[A <: I, B <: I] <: I
 
   //noinspection ScalaUnnecessaryParentheses
-  def associativityLaw[A <: I, B <: I, C <: I]: ((A |+| B) |+| C) =:= (A |+| (B |+| C))
+  def associativityLaw[A <: I, B <: I, C <: I](a: A, b: B, c: C): ((A |+| B) |+| C) =:= (A |+| (B |+| C))
 }
 
 trait TypeLevelCommutativeSemigroup[I] extends TypeLevelSemigroup[I] {
   //noinspection ScalaUnnecessaryParentheses
-  def commutativityLaw[A <: I, B <: I]: (A |+| B) =:= (B |+| A)
+  def commutativityLaw[A <: I, B <: I](a: A, b: B): (A |+| B) =:= (B |+| A)
 }
 
 /** Type-level semigroup with an ability to emerge appropriate value */

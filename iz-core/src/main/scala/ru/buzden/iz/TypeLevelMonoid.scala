@@ -5,8 +5,8 @@ package ru.buzden.iz
 trait TypeLevelMonoid[I] extends TypeLevelSemigroup[I] {
   type Empty <: I
 
-  def leftIdentityLaw[B <: I]: (Empty |+| B) =:= B
-  def rightIdentityLaw[A <: I]: (A |+| Empty) =:= A
+  def leftIdentityLaw[B <: I](b: B): (Empty |+| B) =:= B
+  def rightIdentityLaw[A <: I](a: A): (A |+| Empty) =:= A
 }
 
 /** Type-level monoid with an ability to emerge appropriate value */
