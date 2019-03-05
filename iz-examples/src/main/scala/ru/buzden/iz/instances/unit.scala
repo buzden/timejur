@@ -7,8 +7,9 @@ object unit {
     override type Empty = Unit
     override type |+|[A, B] = Unit
 
-    override def leftIdentityLaw[B <: Unit]: Unit =:= B = ???
-    override def rightIdentityLaw[A <: Unit]: Unit =:= A = ???
+    private implicit def unitIsFinal[A <: Unit]: Unit <:< A = implicitly[Unit <:< Unit].asInstanceOf[Unit <:< A]
+    override def leftIdentityLaw[B <: Unit]: Unit =:= B = <:<.antisymm
+    override def rightIdentityLaw[A <: Unit]: Unit =:= A = leftIdentityLaw[A]
     override def associativityLaw[A <: Unit, B <: Unit, C <: Unit]: Unit =:= Unit = implicitly
     override def commutativityLaw[A <: Unit, B <: Unit]: Unit =:= Unit = implicitly
 
