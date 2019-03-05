@@ -8,7 +8,7 @@ import ru.buzden.iz._
 final case class TwoFacedTimedValue[A, ATime](value: A, time: ATime)
 
 object TwoFacedTimedValue {
-  implicit def indexedMonadForIndexedTimedValue[T: TwoFacedMonoid]: IzMonad[T, TwoFacedTimedValue] = new IzMonad[T, TwoFacedTimedValue] {
+  implicit def izMonadForTwoFacedTimedValue[T: TwoFacedMonoid]: IzMonad[T, TwoFacedTimedValue] = new IzMonad[T, TwoFacedTimedValue] {
     override val im: TwoFacedMonoid[T] = implicitly
     import im._
 
