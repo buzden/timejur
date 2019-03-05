@@ -21,15 +21,11 @@ object Nat0 {
     override type |+|[A <: Nat0, B <: Nat0] = A#Sum[B]
 
     override def leftIdentityLaw[B <: Nat0]: B =:= B = implicitly
-
     override def rightIdentityLaw[A <: Nat0]: A#Sum[Zero.type] =:= A = commutativityLaw[A, Zero.type]
-
     override def associativityLaw[A <: Nat0, B <: Nat0, C <: Nat0]: A#Sum[B]#Sum[C] =:= A#Sum[B#Sum[C]] = ???
-
     override def commutativityLaw[A <: Nat0, B <: Nat0]: A#Sum[B] =:= B#Sum[A] = ???
 
     override def empty: Empty = Zero
-
     override def combine[A <: Nat0, B <: Nat0](a: A, b: B): A |+| B = a `add` b
   }
 }
