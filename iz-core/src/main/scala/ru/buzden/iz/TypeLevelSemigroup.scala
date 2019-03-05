@@ -8,6 +8,11 @@ trait TypeLevelSemigroup[I] {
   def associativityLaw[A <: I, B <: I, C <: I]: ((A |+| B) |+| C) =:= (A |+| (B |+| C))
 }
 
+trait TypeLevelCommutativeSemigroup[I] extends TypeLevelSemigroup[I] {
+  //noinspection ScalaUnnecessaryParentheses
+  def commutativityLaw[A <: I, B <: I]: (A |+| B) =:= (B |+| A)
+}
+
 /** Type-level semigroup with an ability to emerge appropriate value */
 trait TwoFacedSemigroup[I] extends TypeLevelSemigroup[I] {
   def combine[A <: I, B <: I](a: A, b: B): A |+| B
