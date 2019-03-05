@@ -22,7 +22,7 @@ object Nat0 {
 
     override def leftIdentityLaw[B <: Nat0]: B =:= B = implicitly
 
-    override def rightIdentityLaw[A <: Nat0]: A#Sum[Nat0.Zero.type] =:= A = ???
+    override def rightIdentityLaw[A <: Nat0]: A#Sum[Zero.type] =:= A = commutativityLaw[A, Zero.type]
 
     override def associativityLaw[A <: Nat0, B <: Nat0, C <: Nat0]: A#Sum[B]#Sum[C] =:= A#Sum[B#Sum[C]] = ???
 
