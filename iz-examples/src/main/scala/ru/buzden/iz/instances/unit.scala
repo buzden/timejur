@@ -8,10 +8,10 @@ object unit {
     override type |+|[A, B] = Unit
 
     private implicit def unitIsFinal[A <: Unit]: Unit <:< A = implicitly[Unit <:< Unit].asInstanceOf[Unit <:< A]
-    override def leftIdentityLaw[B <: Unit]: Unit =:= B = <:<.antisymm
-    override def rightIdentityLaw[A <: Unit]: Unit =:= A = leftIdentityLaw[A]
-    override def associativityLaw[A <: Unit, B <: Unit, C <: Unit]: Unit =:= Unit = implicitly
-    override def commutativityLaw[A <: Unit, B <: Unit]: Unit =:= Unit = implicitly
+    override def leftIdentityLaw[B <: Unit](b: B): Unit =:= B = <:<.antisymm
+    override def rightIdentityLaw[A <: Unit](a: A): Unit =:= A = leftIdentityLaw[A](a)
+    override def associativityLaw[A <: Unit, B <: Unit, C <: Unit](a: A, b: B, c: C): Unit =:= Unit = implicitly
+    override def commutativityLaw[A <: Unit, B <: Unit](a: A, b: B): Unit =:= Unit = implicitly
 
     override def empty: Empty = ()
     override def combine[A, B](a: A, b: B): A |+| B = ()
