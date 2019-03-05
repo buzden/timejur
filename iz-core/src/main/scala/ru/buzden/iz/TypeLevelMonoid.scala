@@ -1,11 +1,12 @@
 package ru.buzden.iz
 
 /** Type-level monoid */
+//noinspection ScalaUnnecessaryParentheses
 trait TypeLevelMonoid[I] extends TypeLevelSemigroup[I] {
   type Empty <: I
 
-  def leftIdentityLaw[B <: I]: Empty |+| B =:= B
-  def rightIdentityLaw[A <: I]: A |+| Empty =:= A
+  def leftIdentityLaw[B <: I]: (Empty |+| B) =:= B
+  def rightIdentityLaw[A <: I]: (A |+| Empty) =:= A
 }
 
 /** Type-level monoid with an ability to emerge appropriate value */

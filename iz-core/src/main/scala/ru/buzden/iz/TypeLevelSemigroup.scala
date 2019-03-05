@@ -5,7 +5,7 @@ trait TypeLevelSemigroup[I] {
   type |+|[A <: I, B <: I] <: I
 
   //noinspection ScalaUnnecessaryParentheses
-  def associativityLaw[A <: I, B <: I, C <: I]: (A |+| B) |+| C =:= A |+| (B |+| C)
+  def associativityLaw[A <: I, B <: I, C <: I]: ((A |+| B) |+| C) =:= (A |+| (B |+| C))
 }
 
 /** Type-level semigroup with an ability to emerge appropriate value */
