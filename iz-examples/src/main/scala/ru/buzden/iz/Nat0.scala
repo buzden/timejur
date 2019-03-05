@@ -16,7 +16,7 @@ object Nat0 {
     override def add[N <: Nat0](n: N): Succ[p.Sum[N]] = Succ(p.add(n))
   }
 
-  implicit val nat0HasTLMonoid: TwoFacedMonoid[Nat0] = new TwoFacedMonoid[Nat0] {
+  implicit val nat0HasTLMonoid: TwoFacedMonoid[Nat0] = new TwoFacedMonoid[Nat0] with TypeLevelCommutativeSemigroup[Nat0] {
     override type Empty = Zero.type
     override type |+|[A <: Nat0, B <: Nat0] = A#Sum[B]
 
@@ -25,6 +25,8 @@ object Nat0 {
     override def rightIdentityLaw[A <: Nat0]: A#Sum[Nat0.Zero.type] =:= A = ???
 
     override def associativityLaw[A <: Nat0, B <: Nat0, C <: Nat0]: A#Sum[B]#Sum[C] =:= A#Sum[B#Sum[C]] = ???
+
+    override def commutativityLaw[A <: Nat0, B <: Nat0]: A#Sum[B] =:= B#Sum[A] = ???
 
     override def empty: Empty = Zero
 
