@@ -7,9 +7,11 @@ import cats.instances.tuple._
 import cats.kernel.laws.discipline.SemigroupTests
 import cats.laws.discipline.SemigroupalTests.Isomorphisms
 import cats.laws.discipline.{FunctorTests, MonadTests}
+import cats.syntax.apply._
 import cats.{Eq, Semigroup}
+import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.cats.implicits._
 import org.specs2.{ScalaCheck, Specification}
 import org.typelevel.discipline.specs2.Discipline
 import ru.buzden.timejur.Time
@@ -35,5 +37,5 @@ object TimedValueSpec extends Specification with ScalaCheck with Discipline { de
   )
 
   implicit def arbStaticallyTimed[A: Arbitrary, T: Arbitrary]: Arbitrary[TimedValue[A, T]] =
-    Arbitrary { Gen.zip(arbitrary[A], arbitrary[T]).map { case (a, t) => TimedValue(a, t) } }
+    Arbitrary { (arbitrary[A], arbitrary[T]) `mapN` { TimedValue(_, _) } }
 }
