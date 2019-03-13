@@ -6,9 +6,11 @@ import cats.instances.long._
 import cats.instances.tuple._
 import cats.laws.discipline._
 import cats.laws.discipline.eq._
+import cats.syntax.apply._
 import cats.{Eq, Monoid, Order}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Cogen, Gen}
+import org.scalacheck.cats.implicits._
+import org.scalacheck.{Arbitrary, Cogen}
 import org.specs2.{ScalaCheck, Specification}
 import org.typelevel.discipline.specs2.Discipline
 import ru.buzden.timejur.Time
@@ -38,7 +40,7 @@ object StaticallyTimedSpec extends Specification with ScalaCheck with Discipline
   )
 
   implicit def arbStaticallyTimed[A: Cogen, B: Arbitrary, T: Arbitrary]: Arbitrary[StaticallyTimed[A, B, T]] =
-    Arbitrary { Gen.zip(arbitrary[A => B], arbitrary[T]).map { case (f, t) => StaticallyTimed(f, t) } }
+    Arbitrary { (arbitrary[A => B], arbitrary[T]) `mapN` { StaticallyTimed(_, _) } }
 
   implicit def eqStaticallyTimed[A: Arbitrary, B: Eq, T: Eq]: Eq[StaticallyTimed[A, B, T]] =
     Eq.and(Eq.by(_.f), Eq.by(_.time))
