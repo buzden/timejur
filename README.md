@@ -40,6 +40,10 @@ TBD
 
 TBD
 
+## Related work
+
+- Oleg Kiselyov's [Number-parameterized types](http://okmij.org/ftp/Haskell/number-parameterized-types.html), especially the "Monad parameterized by *time*" part.
+
 ## Credits
 
 This work is a part of the [ductilejur](https://forge.ispras.ru/projects/ductilejur) project.
